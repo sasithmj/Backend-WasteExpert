@@ -1,0 +1,47 @@
+const mongoose = require("mongoose");
+const db = require("../config/DBconfig");
+const bcrypt = require("bcrypt");
+
+const { Schema } = mongoose;
+
+const wasteTypeSchema = new Schema({
+  wastetype: {
+    type: String,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+});
+
+const wasteScheduleSchema = new Schema({
+  UserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  WasteType: {
+    type: [wasteTypeSchema],
+    required: true,
+  },
+  ScheduledDate: {
+    type: Date,
+    required: true,
+  },
+  Location: {
+    type: String,
+    required: true,
+  },
+});
+
+wasteScheduleSchema.pre("save", async function () {
+  try {
+    var wasteSchedule = this;
+  } catch (error) {}
+});
+
+const WasteScheduleModel = db.model(
+  "WasteCollectionSchedule",
+  wasteScheduleSchema
+);
+module.exports = WasteScheduleModel;

@@ -3,6 +3,7 @@ const UserService = require("../services/UserService");
 exports.register = async (req, res, next) => {
   try {
     const { name, email, password, mobile } = req.body;
+
     const successRes = await UserService.registerUser(
       name,
       email,
