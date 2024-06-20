@@ -1,15 +1,11 @@
-const mongoose = require("mongoose");
+const mongoos = require("mongoose");
 const db = require("../config/DBconfig");
 const bcrypt = require("bcrypt");
 
-const { Schema } = mongoose;
+const { Schema } = mongoos;
 
-const adminSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  password: {
+const userSchema = new Schema({
+  name: {
     type: String,
     required: true,
   },
@@ -18,10 +14,17 @@ const adminSchema = new Schema({
     required: true,
     unique: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
+  mobile: {
+    type: String,
+    required: true,
+  },
 });
 
-// Pre-save hook to hash the password
-adminSchema.pre("save", async function () {
+userSchema.pre("save", async function () {
   try {
     var user = this;
     const salt = await bcrypt.genSalt(10);
@@ -30,12 +33,12 @@ adminSchema.pre("save", async function () {
   } catch (error) {}
 });
 
-adminSchema.methods.comparePassword = async function (userPassword) {
+userSchema.methods.comparePassword = async function (userPassword) {
   try {
     const isMatch = await bcrypt.compare(userPassword, this.password);
     return isMatch;
   } catch (error) {}
 };
 
-const AdminModel = db.model("admin", adminSchema);
-module.exports = AdminModel;
+const UserModel = db.model("user", userSchema);
+module.exports = UserModel;
