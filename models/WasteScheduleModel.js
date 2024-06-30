@@ -15,6 +15,17 @@ const wasteTypeSchema = new Schema({
   },
 });
 
+const locationSchema = new Schema({
+  lat: {
+    type: Number,
+    required: true,
+  },
+  lng: {
+    type: Number,
+    required: true,
+  },
+});
+
 const wasteScheduleSchema = new Schema({
   UserId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -29,7 +40,7 @@ const wasteScheduleSchema = new Schema({
     required: true,
   },
   Location: {
-    type: String,
+    type: locationSchema,
     required: true,
   },
 });

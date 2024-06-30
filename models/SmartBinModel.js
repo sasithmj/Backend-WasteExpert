@@ -4,11 +4,7 @@ const db = require("../config/DBconfig");
 const { Schema } = mongoose;
 
 const smartBinSchema = new Schema({
-  binID: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true,
-  },
+  
   location: {
     type: String,
     required: true,

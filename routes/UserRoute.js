@@ -3,5 +3,8 @@ const userController = require("../controllers/UserController");
 
 route.post("/registration", userController.register);
 route.post("/login", userController.login);
+route.post("/updatelocation", userController.updateLocation);
+route.post("/updateaddress", userController.updateAddress);
+route.post("/userdetails", userController.getUserDetails);
 
 module.exports = route;

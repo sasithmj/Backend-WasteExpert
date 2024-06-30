@@ -56,7 +56,11 @@ exports.login = async (req, res, next) => {
 
     // Generate token
     let tokenData = { _id: user._id, email: user.email, name: user.name };
-    const token = await UserService.genarateToken(tokenData, "secretkey", "1h");
+    const token = await UserService.genarateToken(
+      tokenData,
+      "secretkey",
+      "24h"
+    );
 
     // Send successful response
     res.status(200).json({ status: true, token: token });
@@ -65,6 +69,91 @@ exports.login = async (req, res, next) => {
     console.error("Login Error:", error);
 
     // Send internal server error response
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.updateLocation = async (req, res, next) => {
+  try {
+    const { email, lat, lng } = req.body;
+
+    // Check if user exists
+    const user = await UserService.checkUser(email);
+    if (!user) {
+      // Log detailed error for internal use
+      console.error("Update Location Error: User not found");
+
+      // Send generic error response
+      return res.status(401).json({ status: false, error: "Invalid User" });
+    }
+
+    // Update the location
+    const successRes = await UserService.updateUserLocation(email, lat, lng);
+
+    // Handle the response based on the successRes
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    // Log the error details
+    console.error("Update Location Error:", error);
+
+    // Send internal server error response
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+exports.updateAddress = async (req, res, next) => {
+  try {
+    const { email, street, city, state, zip } = req.body;
+
+    // Check if user exists
+    const user = await UserService.checkUser(email);
+    if (!user) {
+      // Log detailed error for internal use
+      console.error("Update Address Error: User not found");
+
+      // Send generic error response
+      return res.status(401).json({ status: false, error: "Invalid User" });
+    }
+
+    // Update the location
+    const successRes = await UserService.UpdateUserAddress(
+      email,
+      street,
+      city,
+      state,
+      zip
+    );
+
+    // Handle the response based on the successRes
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    // Log the error details
+    console.error("Update Address Error:", error);
+
+    // Send internal server error response
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.getUserDetails = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const successRes = await UserService.getUserById(email);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, user: successRes.user });
+    } else {
+      res.status(404).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };

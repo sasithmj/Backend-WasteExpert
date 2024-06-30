@@ -30,9 +30,57 @@ class UserService {
       throw error;
     }
   }
+  static async updateUserLocation(email, lat, lng) {
+    try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+
+      // Update the user's location
+      user.location = { lat, lng };
+      await user.save();
+
+      return { success: true, message: "Location updated successfully" };
+    } catch (error) {
+      throw new Error("Error while updating location");
+    }
+  }
 
   static async genarateToken(data, secretkey, jwtExp) {
     return jwt.sign(data, secretkey, { expiresIn: jwtExp });
+  }
+
+  static async UpdateUserAddress(email, street, city, state, zip) {
+    try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+
+      // Update the user's location
+      user.address = { street, city, state, zip };
+      await user.save();
+
+      return { success: true, message: "Address updated successfully" };
+    } catch (error) {
+      throw new Error("Error while updating location");
+    }
+  }
+
+  static async getUserById(email) {
+    try {
+      const user = await User.findOne({ email }).select("-password"); // Exclude the password field
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+      return { success: true, user: user };
+    } catch (error) {
+      console.error("Error while fetching user details:", error);
+      throw new Error("Error while fetching user details");
+    }
   }
 }
 

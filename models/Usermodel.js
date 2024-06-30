@@ -3,6 +3,34 @@ const db = require("../config/DBconfig");
 const bcrypt = require("bcrypt");
 
 const { Schema } = mongoos;
+const locationSchema = new Schema({
+  lat: {
+    type: Number,
+    required: true,
+  },
+  lng: {
+    type: Number,
+    required: true,
+  },
+});
+const addressSchema = new Schema({
+  street: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  zip: {
+    type: String,
+    required: true,
+  },
+});
 
 const userSchema = new Schema({
   name: {
@@ -21,6 +49,14 @@ const userSchema = new Schema({
   mobile: {
     type: String,
     required: true,
+  },
+  location: {
+    type: locationSchema,
+    required: false,
+  },
+  address: {
+    type: addressSchema,
+    required: false,
   },
 });
 
