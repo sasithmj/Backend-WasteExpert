@@ -1,18 +1,7 @@
 const mongoose = require('mongoose');
 
-const garbageTypeSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    required: true,
-  },
-});
-
 const schedulePickupSchema = new mongoose.Schema({
-  scheduleID: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true,
-  },
+  
   area: {
     type: String,
     required: true,
