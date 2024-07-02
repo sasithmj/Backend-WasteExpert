@@ -10,10 +10,8 @@ exports.schedulePickup = async (req, res, next) => {
             area, date, collector, garbageTypes
         );
 
-        // Log the response from the UserService.registerUser method
         console.log("Success Response:", newSchedulepickup);
 
-        // Handle the response based on the successRes
         if (newSchedulepickup.success) {
             res.status(201).json({ status: true, success: newSchedulepickup.message });
         } else {
