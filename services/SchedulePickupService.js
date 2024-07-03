@@ -1,13 +1,25 @@
-const SchedulePickup = require('../models/SchedulePickupModel'); // Import model
+const SchedulePickup = require("../models/SchedulePickupModel");
 
 class SchedulePickupService {
   static async addSchedulePickup(area, date, collector, garbageTypes) {
     try {
-      const newSchedulePickup = new SchedulePickup({ area, date, collector, garbageTypes });
+      const newSchedulePickup = new SchedulePickup({
+        area,
+        date,
+        collector,
+        garbageTypes,
+      });
       await newSchedulePickup.save();
-      return { success: true, message: "Add New Schedule Pickupd successfully" };
+      return {
+        success: true,
+        message: "Added New Schedule Pickup successfully",
+      };
     } catch (error) {
-      throw new Error("Error Add New Schedule");
+      console.error("Error in SchedulePickupService.addSchedulePickup:", error);
+      return {
+        success: false,
+        message: "Error Adding New Schedule",
+      };
     }
   }
 }

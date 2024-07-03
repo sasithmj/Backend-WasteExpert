@@ -1,7 +1,7 @@
 const app = require("./app");
 const db = require("./config/DBconfig");
 const userModel=require("./models/Usermodel")
-const port = 3000;
+const port = 3001;
 // const SchedulePickupModel=require("./models/SchedulePickupModel")
 
 app.get("/", (req, res) => {

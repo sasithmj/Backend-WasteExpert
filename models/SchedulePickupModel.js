@@ -1,7 +1,9 @@
-const mongoose = require('mongoose');
+const db = require("../config/DBconfig");
+const mongoose = require("mongoose");
 
-const schedulePickupSchema = new mongoose.Schema({
-  
+const { Schema } = mongoose;
+
+const schedulePickupSchema = new Schema({
   area: {
     type: String,
     required: true,
@@ -21,7 +23,16 @@ const schedulePickupSchema = new mongoose.Schema({
     required: true,
   },
 });
+schedulePickupSchema.pre("save", async function () {
+  try {
+    var pickupSchedule = this;
+  } catch (error) {}
+});
 
-const SchedulePickupModel = mongoose.model("schedulePickup", schedulePickupSchema);
+// const SchedulePickupModel = mongoose.model(
+//   "schedulePickup",
+//   schedulePickupSchema
+// );
 
+const SchedulePickupModel = db.model("schedulePickup", schedulePickupSchema);
 module.exports = SchedulePickupModel;
