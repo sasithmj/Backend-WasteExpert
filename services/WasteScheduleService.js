@@ -1,21 +1,22 @@
 const WasteSchedule = require("../models/WasteScheduleModel");
+const User = require("../models/Usermodel");
 
 class WasteScheduleService {
-  static async scheduleWaste(UserId, WasteType, ScheduledDate, Location) {
+  static async scheduleWaste(UserId, WasteType, ScheduledDate, ScheduleState) {
     try {
       // Log the data before saving
       console.log("Data to be saved in WasteScheduleService:", {
         UserId,
         WasteType,
         ScheduledDate,
-        Location,
+        ScheduleState,
       });
 
       const newSchedule = new WasteSchedule({
         UserId,
         WasteType,
         ScheduledDate,
-        Location,
+        ScheduleState,
       });
 
       // Log the new schedule object before saving
@@ -26,6 +27,29 @@ class WasteScheduleService {
     } catch (error) {
       console.error("Error while saving waste schedule:", error);
       throw new Error(`Error while scheduling waste: ${error}`);
+    }
+  }
+
+  static async getScheduleWaste(UserId, ScheduleState) {
+    try {
+      const user = await User.findOne({ _id: UserId }).select("-password");
+
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+
+      const schedules = await WasteSchedule.find({
+        UserId: UserId,
+        ScheduleState: ScheduleState,
+      });
+      if (!schedules) {
+        return { success: false, message: "No schedules found" };
+      }
+
+      return { success: true, user: user, schedules: schedules };
+    } catch (error) {
+      console.error("Error while fetching user details:", error);
+      throw new Error("Error while fetching user details");
     }
   }
 }
