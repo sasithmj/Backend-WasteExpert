@@ -61,7 +61,7 @@ exports.login = async (req, res, next) => {
     const token = await UserService.genarateToken(
       tokenData,
       "secretkey",
-      "24h"
+      "120h"
     );
 
     // Send successful response

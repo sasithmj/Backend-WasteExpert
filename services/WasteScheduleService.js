@@ -52,6 +52,36 @@ class WasteScheduleService {
       throw new Error("Error while fetching user details");
     }
   }
+
+  static async updateScheduleDate(scheduleId, scheduleDate) {
+    try {
+      // Find the user by email
+      const schedule = await WasteSchedule.findOne({ _id: scheduleId });
+      if (!schedule) {
+        return { success: false, message: "schedule not found" };
+      }
+
+      // Update the user's location
+      schedule.ScheduledDate = scheduleDate;
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+    } catch (error) {
+      throw new Error("Error while updating Schedule");
+    }
+  }
+  static async deleteScheduleData(scheduleId) {
+    try {
+      // Find the user by email
+      const deleteSchedule = await WasteSchedule.findOneAndDelete({ _id: scheduleId });
+      if (!deleteSchedule) {
+        return { success: false, message: "schedule not found" };
+      }
+      return { success: true, message: "Schedule deleted successfully" };
+    } catch (error) {
+      throw new Error("Error while updating Schedule");
+    }
+  }
 }
 
 module.exports = WasteScheduleService;
