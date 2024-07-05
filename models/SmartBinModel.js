@@ -1,18 +1,35 @@
-const mongoose = require("mongoose");
 const db = require("../config/DBconfig");
+const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
 const smartBinSchema = new Schema({
-  
-  location: {
+  area: {
     type: String,
     required: true,
   },
-  fillLevel: {
+  locationLat: {
     type: Number,
     required: true,
   },
+  locationLng: {
+    type: Number,
+    required: true,
+  },
+  garbageTypes: {
+    type: String,
+    required: true,
+  },
+  fillLevel: { // Added the new property
+    type: String,
+    required: false, // Adjust as needed (required/optional)
+  },
+});
+
+smartBinSchema.pre("save", async function () {
+  try {
+    var pickupSchedule = this;
+  } catch (error) {}
 });
 
 const SmartBinModel = db.model("smartBin", smartBinSchema);

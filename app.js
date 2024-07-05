@@ -6,6 +6,7 @@ const userRoute = require("./routes/UserRoute");
 const adminRoute = require("./routes/AdminRoute");
 const scheduleRoute = require("./routes/ScheduleRoute");
 const schedulePickupRoute = require("./routes/SchedulePickupRoute");
+const SmartBinRoute = require("./routes/SmartBinRoute");
 const cors = require("cors");
 
 const app = express();
@@ -23,7 +24,8 @@ app.use("/", userRoute);
 app.use("/admin", adminRoute);
 app.use("/schedule", scheduleRoute);
 
-//add this
+//web
 app.use("/schedulePickup", schedulePickupRoute);
+app.use("/smartbin", SmartBinRoute);
 
 module.exports = app;

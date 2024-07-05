@@ -29,10 +29,5 @@ schedulePickupSchema.pre("save", async function () {
   } catch (error) {}
 });
 
-// const SchedulePickupModel = mongoose.model(
-//   "schedulePickup",
-//   schedulePickupSchema
-// );
-
 const SchedulePickupModel = db.model("schedulePickup", schedulePickupSchema);
 module.exports = SchedulePickupModel;
