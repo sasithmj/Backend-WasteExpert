@@ -5,12 +5,20 @@ const bcrypt = require("bcrypt"); // Dependency for password hashing
 const { Schema } = mongoose;
 
 const dispatcherSchema = new Schema({
-  userName: {
+  username: {
     type: String,
     required: true,
     unique: true, // Ensures unique usernames
   },
   password: {
+    type: String,
+    required: true,
+  },
+  fullName: {
+    type: String,
+    required: true,
+  },
+  address: {
     type: String,
     required: true,
   },

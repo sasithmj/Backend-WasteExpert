@@ -4,12 +4,14 @@ exports.addCollector = async (req, res, next) => {
   console.log("addCollector function invoked");
 
   try {
-    const { userName, password, phoneNum, email, vehicalNo } = req.body.formData;
+    const { username, password, fullName, address, phoneNum, email, vehicalNo } = req.body.formData;
     console.log("Request Body:", req.body);
 
     const newCollector = await CollectorService.addCollector({
-      userName,
+      username,
       password,
+      fullName,
+      address,
       phoneNum,
       email,
       vehicalNo,
