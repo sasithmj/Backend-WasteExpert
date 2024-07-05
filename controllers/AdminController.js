@@ -44,3 +44,38 @@ exports.login = async (req, res, next) => {
   }
 
 };
+
+exports.addAdmin = async (req, res, next) => {
+  console.log("addAdmin function invoked");
+
+  try {
+    const { userName, password, role, phoneNum, email, jobs } = req.body.formData;
+    console.log("Request Body:", req.body);
+
+    const newAdmin = await AdminService.addAdmin({
+      userName,
+      password,
+      role,
+      phoneNum,
+      email,
+      jobs,
+    });
+
+    console.log("Service Response:", newAdmin);
+
+    if (newAdmin.success) {
+      console.log("Success: New Admin added successfully");
+      return res
+        .status(201)
+        .json({ status: true, success: newAdmin.message });
+    } else {
+      console.error("Error: Adding new Admin failed:", newAdmin.message);
+      return res
+        .status(400)
+        .json({ status: false, error: newAdmin.message });
+    }
+  } catch (error) {
+    console.error("Error in addAdmin controller:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};

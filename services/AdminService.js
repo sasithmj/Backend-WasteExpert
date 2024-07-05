@@ -12,7 +12,6 @@ class AdminService {
         return { success: false, message: "Admin already exists" };
       }
 
-      
       const newAdmin = new Admin({ username, email, password: password });
       await newAdmin.save();
       return { success: true, message: "Admin registered successfully" };
@@ -37,6 +36,25 @@ class AdminService {
       throw error;
     }
   }
+
+  
+  static async addAdmin(adminData) {
+    try {
+      const newAdmin = new Admin(adminData);
+      await newAdmin.save();
+      return {
+        success: true,
+        message: "Added New Admin successfully",
+      };
+    } catch (error) {
+      console.error("Error in AdminService.addAdmin:", error);
+      return {
+        success: false,
+        message: "Error Adding New Admin",
+      };
+    }
+  }
+  
 }
 
 module.exports = AdminService;

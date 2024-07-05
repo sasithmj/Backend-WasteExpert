@@ -18,6 +18,21 @@ const adminSchema = new Schema({
     required: true,
     unique: true,
   },
+
+  role: {
+    type: String,
+    required: true,
+  },
+  phoneNum: {
+    type: String,
+    required: true,
+  },
+  
+  jobs: {
+    type: String,
+    required: true,
+  },
+
 });
 
 // Pre-save hook to hash the password
