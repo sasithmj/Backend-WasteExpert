@@ -34,7 +34,7 @@ class SmartBinService {
   static async getNearbySmartBins(userLat, userLng, radius) {
     try {
       const smartBins = await SmartBin.find({});
-      console.log(smartBins);
+
       const nearbyBins = smartBins.filter((bin) => {
         const binLocation = { lat: bin.locationLat, lng: bin.locationLng };
         const userLocation = { lat: userLat, lng: userLng };
@@ -42,6 +42,7 @@ class SmartBinService {
         console.log(distance); // Distance in meters
         return distance <= radius; // Filter bins within the specified radius
       });
+      console.log(nearbyBins);
       return {
         success: true,
         bins: nearbyBins,
