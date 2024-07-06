@@ -49,12 +49,14 @@ exports.addAdmin = async (req, res, next) => {
   console.log("addAdmin function invoked");
 
   try {
-    const { userName, password, role, phoneNum, email, jobs } = req.body.formData;
+    const { username, password, fullName, address, role, phoneNum, email, jobs } = req.body;
     console.log("Request Body:", req.body);
 
     const newAdmin = await AdminService.addAdmin({
-      userName,
+      username,
       password,
+      fullName,
+      address,
       role,
       phoneNum,
       email,

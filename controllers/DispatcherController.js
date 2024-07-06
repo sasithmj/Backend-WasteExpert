@@ -4,12 +4,14 @@ exports.addDispatcher = async (req, res, next) => {
   console.log("addDispatcher function invoked");
 
   try {
-    const { userName, password, phoneNum, email } = req.body.formData;
+    const { username, password, fullName, address, phoneNum, email } = req.body.formData;
     console.log("Request Body:", req.body);
 
     const newDispatcher = await DispatcherService.addDispatcher({
-      userName,
+      username,
       password,
+      fullName,
+      address,
       phoneNum,
       email,
     });
