@@ -4,7 +4,8 @@ exports.smartBin = async (req, res, next) => {
   console.log("SmartBin function invoked");
 
   try {
-    const { area, locationLat, locationLng, garbageTypes, fillLevel } = req.body.formData;
+    const { area, locationLat, locationLng, garbageTypes, fillLevel } =
+      req.body.formData;
     console.log("Request Body:", req.body);
 
     const newSmartBin = await SmartBinService.addNewSmartBin(
@@ -33,6 +34,34 @@ exports.smartBin = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error in NewSmartBin controller:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+// Method to get nearby smart bins
+exports.getNearbySmartBins = async (req, res, next) => {
+  console.log("getNearbySmartBins function invoked");
+
+  try {
+    const { lat, lng, radius } = req.body;
+    console.log("Request Body:", req.body);
+
+    const result = await SmartBinService.getNearbySmartBins(lat, lng, radius);
+
+    console.log("Service Response:", result);
+
+    if (result.success) {
+      console.log("Success: Fetched nearby smart bins");
+      return res.status(200).json({ status: true, bins: result.bins });
+    } else {
+      console.log(
+        "Error: Fetching nearby smart bins failed with message:",
+        result.message
+      );
+      return res.status(400).json({ status: false, error: result.message });
+    }
+  } catch (error) {
+    console.error("Error in getNearbySmartBins controller:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
