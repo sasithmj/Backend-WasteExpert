@@ -15,11 +15,11 @@ const adminSchema = new Schema({
   },
   fullName: {
     type: String,
-    required: true,
+    default:'',
   },
   address: {
     type: String,
-    required: true,
+    default:'',
   },
   email: {
     type: String,
@@ -28,16 +28,16 @@ const adminSchema = new Schema({
   },
   role: {
     type: String,
-    required: true,
+    default:'',
   },
   phoneNum: {
     type: String,
-    required: true,
+    default:'',
   },
   
   jobs: {
     type: String,
-    required: true,
+    default:'',
   },
 
 });

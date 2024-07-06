@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 class AdminService {
-  static async registerAdmin(username, email, password) {
+ static async registerAdmin(username, email, password) {
     try {
       const existingAdmin = await Admin.findOne({ email });
       if (existingAdmin) {
@@ -16,6 +16,7 @@ class AdminService {
       await newAdmin.save();
       return { success: true, message: "Admin registered successfully" };
     } catch (error) {
+      console.error('Error while registering admin:', error);
       throw new Error("Error while registering admin");
     }
   }
