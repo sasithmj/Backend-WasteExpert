@@ -1,6 +1,37 @@
 const Dispatcher = require("../models/DispatcherModel");
 
 class DispatcherService {
+
+
+  static async dispatcherLogin(email, password) {
+    try {
+      // Check if dispatcher exists
+      const dispatcher = await Dispatcher.findOne({ email });
+      if (!dispatcher) {
+        return { success: false, error: "Invalid email or password" };
+      }
+
+      // Validate password
+      const isMatch = await bcrypt.compare(password, dispatcher.password);
+      if (!isMatch) {
+        return { success: false, error: "Invalid email or password" };
+      }
+
+      // Generate token
+      const token = jwt.sign(
+        { _id: dispatcher._id, email: dispatcher.email },
+        "secretkey",
+        { expiresIn: "120h" }
+      );
+
+      return { success: true, token };
+    } catch (error) {
+      console.error("Error in DispatcherService.dispatcherLogin:", error);
+      return { success: false, error: "Internal Server Error" };
+    }
+  }
+
+  
   static async addDispatcher(dispatcherData) {
     try {
       const newDispatcher = new Dispatcher(dispatcherData);
