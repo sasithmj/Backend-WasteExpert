@@ -1,5 +1,25 @@
 const DispatcherService = require("../services/DispatcherService");
 
+
+exports.dispatcherLogin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Attempt to login dispatcher
+    const loginResult = await DispatcherService.dispatcherLogin(email, password);
+
+    // Handle login result
+    if (loginResult.success) {
+      res.status(200).json({ status: true, token: loginResult.token });
+    } else {
+      res.status(401).json({ status: false, error: loginResult.error });
+    }
+  } catch (error) {
+    console.error("Error in dispatcherLogin controller:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
 exports.addDispatcher = async (req, res, next) => {
   console.log("addDispatcher function invoked");
 

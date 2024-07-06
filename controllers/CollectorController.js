@@ -1,4 +1,23 @@
-const CollectorService = require("../services/collectorService");
+const CollectorService = require("../services/CollectorService");
+
+
+
+exports.loginCollector = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+
+    const loginRes = await CollectorService.loginCollector(username, password);
+
+    if (loginRes.success) {
+      res.status(200).json({ status: true, token: loginRes.token });
+    } else {
+      res.status(401).json({ status: false, error: loginRes.message });
+    }
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
 
 exports.addCollector = async (req, res, next) => {
   console.log("addCollector function invoked");
