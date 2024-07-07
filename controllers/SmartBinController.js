@@ -39,7 +39,8 @@ exports.smartBin = async (req, res, next) => {
 
 exports.getSmartBin = async (req, res, next) => {
   try {
-    const { area, locationLat, locationLng, garbageTypes, fillLevel } = req.body;
+    const { area, locationLat, locationLng, garbageTypes, fillLevel } =
+      req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
@@ -65,6 +66,7 @@ exports.getSmartBin = async (req, res, next) => {
   } catch (error) {
     console.error("Error:", error);
   }
+};
 
 // Method to get nearby smart bins
 exports.getNearbySmartBins = async (req, res, next) => {
