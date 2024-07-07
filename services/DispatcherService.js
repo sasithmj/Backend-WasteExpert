@@ -35,6 +35,7 @@ class DispatcherService {
   
   static async addDispatcher(dispatcherData) {
     try {
+      console.log(dispatcherData)
       const newDispatcher = new Dispatcher(dispatcherData);
       await newDispatcher.save();
       return {

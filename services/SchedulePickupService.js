@@ -22,6 +22,31 @@ class SchedulePickupService {
       };
     }
   }
+
+  static async getSmartBin() {
+    try {
+      const shedulepickups = await SchedulePickup.find({});
+      if (!shedulepickups) {
+        return { success: false, message: "No Smartbin found" };
+      }
+
+      return {
+        success: true,
+        shedulepickups: shedulepickups.map((shedulepickup) => ({
+          // Include desired properties from smartbin object
+          area: shedulepickup.area, 
+          date: shedulepickup.date, 
+          collector: shedulepickup.collector, 
+          garbageTypes: shedulepickup.garbageTypes, 
+          Status: shedulepickup.Status
+        })),
+      };
+
+    } catch (error) {
+      console.error("Error while fetching smartbin details:", error);
+      throw new Error("Error while fetching smartbin details");
+    }
+  }
 }
 
 module.exports = SchedulePickupService;

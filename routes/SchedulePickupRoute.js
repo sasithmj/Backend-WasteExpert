@@ -1,6 +1,7 @@
 const route = require("express").Router();
 const schedulePickupController = require("../controllers/SchedulePickupController");
 
-route.post("/schedulepickup", schedulePickupController.schedulePickup);
+route.post("/newschedulepickup", schedulePickupController.newSchedulePickup);
+route.post("/getschedulepickup", schedulePickupController.getShedulePickups);
 
 module.exports = route;

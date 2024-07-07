@@ -1,6 +1,6 @@
 const SchedulePickupService = require("../services/SchedulePickupService");
 
-exports.schedulePickup = async (req, res, next) => {
+exports.newSchedulePickup = async (req, res, next) => {
   console.log("schedulePickup function invoked");
 
   try {
@@ -32,6 +32,37 @@ exports.schedulePickup = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error in schedulePickup controller:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.getShedulePickups = async (req, res, next) => {
+  try {
+    const {area, date, collector, garbageTypes, Status} = req.body;
+
+    // Log the received request body
+    console.log("Request Body:", req.body);
+
+    const successRes = await SchedulePickupService.getSmartBin(
+      area, 
+      date, 
+      collector, 
+      garbageTypes, 
+      Status
+    );
+    // Log the success response
+    console.log("Success Response:", successRes);
+
+    if (successRes.success) {
+      res.status(201).json({
+        status: true,
+        shedulepickups: successRes.shedulepickups,
+      });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };

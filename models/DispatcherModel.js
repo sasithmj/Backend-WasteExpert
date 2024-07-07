@@ -8,7 +8,7 @@ const dispatcherSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true, // Ensures unique usernames
+    unique: false, // Ensures unique usernames
   },
   password: {
     type: String,
@@ -34,13 +34,13 @@ const dispatcherSchema = new Schema({
 });
 
 // Hash password before saving
-dispatcherSchema.pre("save", async function (next) {
+dispatcherSchema.pre("save", async function () {
   const dispatcher = this;
-  if (!dispatcher.isModified("password")) return next();
+  if (!dispatcher.isModified("password"));
 
   const salt = await bcrypt.genSalt(10);
   dispatcher.password = await bcrypt.hash(dispatcher.password, salt);
-  next();
+  
 });
 
 const DispatcherModel = db.model("Dispatcher", dispatcherSchema);
