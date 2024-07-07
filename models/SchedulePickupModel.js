@@ -22,6 +22,11 @@ const schedulePickupSchema = new Schema({
     // type: [garbageTypeSchema],
     required: true,
   },
+  Status: {
+    type: String,
+    // type: [garbageTypeSchema],
+    default:'pending',
+  },
 });
 schedulePickupSchema.pre("save", async function () {
   try {

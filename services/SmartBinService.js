@@ -23,6 +23,31 @@ class SmartBinService {
       };
     }
   }
+
+  static async getSmartBin() {
+    try {
+      const smartbins = await SmartBin.find({});
+      if (!smartbins) {
+        return { success: false, message: "No Smartbin found" };
+      }
+
+      return {
+        success: true,
+        smartbins: smartbins.map((smartbin) => ({
+          // Include desired properties from smartbin object
+          area: smartbin.area,
+          locationLat: smartbin.locationLat,
+          locationLng: smartbin.locationLng,
+          garbageTypes: smartbin.garbageTypes,
+          fillLevel: smartbin.fillLevel,
+        })),
+      };
+
+    } catch (error) {
+      console.error("Error while fetching smartbin details:", error);
+      throw new Error("Error while fetching smartbin details");
+    }
+  }
 }
 
 module.exports = SmartBinService;
