@@ -24,6 +24,7 @@ class SmartBinService {
     }
   }
 
+
   static async getSmartBin() {
     try {
       const smartbins = await SmartBin.find({});
@@ -46,6 +47,31 @@ class SmartBinService {
     } catch (error) {
       console.error("Error while fetching smartbin details:", error);
       throw new Error("Error while fetching smartbin details");
+    }
+  }
+
+  static async getNearbySmartBins(userLat, userLng, radius) {
+    try {
+      const smartBins = await SmartBin.find({});
+
+      const nearbyBins = smartBins.filter((bin) => {
+        const binLocation = { lat: bin.locationLat, lng: bin.locationLng };
+        const userLocation = { lat: userLat, lng: userLng };
+        const distance = haversine(binLocation, userLocation);
+        console.log(distance); // Distance in meters
+        return distance <= radius; // Filter bins within the specified radius
+      });
+      console.log(nearbyBins);
+      return {
+        success: true,
+        bins: nearbyBins,
+      };
+    } catch (error) {
+      console.error("Error in SmartBinService.getNearbySmartBins:", error);
+      return {
+        success: false,
+        message: "Error fetching nearby smart bins",
+      };
     }
   }
 }
