@@ -1,9 +1,8 @@
 const Collector = require("../models/CollectorModel");
-
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 class CollectorService {
-
-
-static async loginCollector(username, password) {
+  static async loginCollector(username, password) {
     try {
       // Find collector by username
       const collector = await Collector.findOne({ username });
@@ -30,8 +29,6 @@ static async loginCollector(username, password) {
       throw error;
     }
   }
-
-
 
   static async addCollector(collectorData) {
     try {
