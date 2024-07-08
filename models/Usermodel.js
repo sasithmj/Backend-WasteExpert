@@ -71,13 +71,11 @@ userSchema.pre("save", async function () {
 
 userSchema.methods.comparePassword = async function (userPassword) {
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashpaswword = await bcrypt.hash(this.password, salt);
     const isMatch = await bcrypt.compare(userPassword, this.password);
-    console.log(hashpaswword);
     return isMatch;
   } catch (error) {
     console.error("Error comparing password:", error);
+    return false;
   }
 };
 
