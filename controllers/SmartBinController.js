@@ -39,8 +39,7 @@ exports.smartBin = async (req, res, next) => {
 
 exports.getSmartBin = async (req, res, next) => {
   try {
-    const { area, locationLat, locationLng, garbageTypes, fillLevel } =
-      req.body;
+    const { area, locationLat, locationLng, garbageTypes, fillLevel } = req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);

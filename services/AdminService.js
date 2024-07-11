@@ -55,6 +55,31 @@ class AdminService {
       };
     }
   }
+
+  static async getAllAdmin() {
+    try {
+      const admins = await Admin.find({});
+      if (!admins) {
+        return { success: false, message: "No Admin found" };
+      }
+
+      return {
+        success: true,
+        admins: admins.map((admin) => ({
+          username: admin.username,
+          fullName: admin.fullName,
+          address: admin.address,
+          email: admin.email,
+          role: admin.role,
+          jobs: admin.jobs
+        })),
+      };
+
+    } catch (error) {
+      console.error("Error while fetching smartbin details:", error);
+      throw new Error("Error while fetching smartbin details");
+    }
+  }
   
 }
 
