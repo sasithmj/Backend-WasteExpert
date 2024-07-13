@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 class AdminService {
- static async registerAdmin(username, email, password) {
+  static async registerAdmin(username, email, password) {
     try {
       const existingAdmin = await Admin.findOne({ email });
       if (existingAdmin) {
@@ -16,7 +16,7 @@ class AdminService {
       await newAdmin.save();
       return { success: true, message: "Admin registered successfully" };
     } catch (error) {
-      console.error('Error while registering admin:', error);
+      console.error("Error while registering admin:", error);
       throw new Error("Error while registering admin");
     }
   }
@@ -38,7 +38,6 @@ class AdminService {
     }
   }
 
-  
   static async addAdmin(adminData) {
     try {
       const newAdmin = new Admin(adminData);
@@ -55,7 +54,30 @@ class AdminService {
       };
     }
   }
-  
+
+  static async getAllAdmin() {
+    try {
+      const admins = await Admin.find({});
+      if (!admins) {
+        return { success: false, message: "No Admin found" };
+      }
+
+      return {
+        success: true,
+        admins: admins.map((admin) => ({
+          username: admin.username,
+          fullName: admin.fullName,
+          address: admin.address,
+          email: admin.email,
+          role: admin.role,
+          jobs: admin.jobs,
+        })),
+      };
+    } catch (error) {
+      console.error("Error while fetching smartbin details:", error);
+      throw new Error("Error while fetching smartbin details");
+    }
+  }
 }
 
 module.exports = AdminService;

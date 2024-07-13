@@ -2,8 +2,6 @@ const Dispatcher = require("../models/DispatcherModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 class DispatcherService {
-
-
   static async dispatcherLogin(email, password) {
     try {
       // Check if dispatcher exists
@@ -32,10 +30,9 @@ class DispatcherService {
     }
   }
 
-  
   static async addDispatcher(dispatcherData) {
     try {
-      console.log(dispatcherData)
+      console.log(dispatcherData);
       const newDispatcher = new Dispatcher(dispatcherData);
       await newDispatcher.save();
       return {
@@ -48,6 +45,29 @@ class DispatcherService {
         success: false,
         message: "Error Adding New Dispatcher",
       };
+    }
+  }
+
+  static async getAllDis() {
+    try {
+      const dispatchers = await Dispatcher.find({});
+      if (!dispatchers) {
+        return { success: false, message: "No Smartbin found" };
+      }
+
+      return {
+        success: true,
+        dispatchers: dispatchers.map((dispatcher) => ({
+          username: dispatcher.username,
+          fullName: dispatcher.fullName,
+          address: dispatcher.address,
+          phoneNum: dispatcher.phoneNum,
+          email: dispatcher.email,
+        })),
+      };
+    } catch (error) {
+      console.error("Error while fetching smartbin details:", error);
+      throw new Error("Error while fetching smartbin details");
     }
   }
 }
