@@ -33,6 +33,7 @@ app.use("/admin", AdminRoute);
 app.use("/schedule", scheduleRoute);
 app.use("/reportWaste", WasteReportRoute);
 
+
 //web
 app.use("/schedulePickup", schedulePickupRoute);
 app.use("/smartbin", SmartBinRoute);

@@ -36,6 +36,7 @@ const wasteReportSchema = new Schema({
 });
 
 wasteReportSchema.pre("save", async function () {
+
   try {
     var wasteSchedule = this;
   } catch (error) {}

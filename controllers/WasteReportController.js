@@ -13,7 +13,10 @@ exports.reportWaste = async (req, res, next) => {
     } = req.body;
 
     // Log the received request body
+
     console.log("Request Body:", req.body);
+
+
 
     const successRes = await ScheduleService.reportWaste(
       UserId,
