@@ -52,7 +52,15 @@ class UserService {
     return jwt.sign(data, secretkey, { expiresIn: jwtExp });
   }
 
-  static async UpdateUserAddress(email, street, city, state, zip) {
+  static async UpdateUserAddress(
+    email,
+    street,
+    city,
+    state,
+    zip,
+    latitude,
+    longitude
+  ) {
     try {
       // Find the user by email
       const user = await User.findOne({ email });
@@ -62,11 +70,12 @@ class UserService {
 
       // Update the user's location
       user.address = { street, city, state, zip };
+      user.location = { lat: latitude, lng: longitude };
       await user.save();
 
       return { success: true, message: "Address updated successfully" };
     } catch (error) {
-      throw new Error("Error while updating location");
+      throw new Error("Error while updating location", error);
     }
   }
 
