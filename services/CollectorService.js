@@ -1,9 +1,7 @@
 const Collector = require("../models/CollectorModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
 class CollectorService {
-
   static async loginCollector(username, password) {
     try {
       // Find collector by username
@@ -46,30 +44,6 @@ class CollectorService {
         success: false,
         message: "Error Adding New Collector",
       };
-    }
-  }
-
-  static async getAllCol() {
-    try {
-      const collectors = await Collector.find({});
-      if (!collectors) {
-        return { success: false, message: "No collectors found" };
-      }
-
-      return {
-        success: true,
-        collectors: collectors.map(collector => ({
-          username: collector.username,
-          fullName: collector.fullName,
-          address: collector.address,
-          phoneNum: collector.phoneNum,
-          email: collector.email,
-          vehicalNo: collector.vehicalNo
-        })),
-      };
-    } catch (error) {
-      console.error("Error while fetching collector details:", error);
-      throw new Error("Error while fetching collector details");
     }
   }
 }

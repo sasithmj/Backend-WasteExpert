@@ -42,7 +42,7 @@ exports.login = async (req, res, next) => {
         .json({ status: false, error: "Invalid email or password" });
     }
 
-    console.log(user)
+    console.log(user);
 
     // Check if the password is correct
     const isMatch = await user.comparePassword(password);
@@ -108,7 +108,7 @@ exports.updateLocation = async (req, res, next) => {
 };
 exports.updateAddress = async (req, res, next) => {
   try {
-    const { email, street, city, state, zip } = req.body;
+    const { email, street, city, state, zip, latitude, longitude } = req.body;
 
     // Check if user exists
     const user = await UserService.checkUser(email);
@@ -126,7 +126,9 @@ exports.updateAddress = async (req, res, next) => {
       street,
       city,
       state,
-      zip
+      zip,
+      latitude,
+      longitude
     );
 
     // Handle the response based on the successRes

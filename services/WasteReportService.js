@@ -12,7 +12,17 @@ class WasteReportService {
     WasteTypes
   ) {
     try {
-      // Log the data before saving
+
+      console.log("Data to be saved in ReportService:", {
+        UserId,
+        Photo,
+        locationLat,
+        locationLng,
+        ReportDate,
+        Description,
+        WasteTypes,
+      });
+
       // console.log("Data to be saved in ReportService:", {
       //   UserId,
       //   Photo,
@@ -22,6 +32,7 @@ class WasteReportService {
       //   Description,
       //   WasteTypes,
       // });
+
 
       const newReport = new ReportSchedule({
         UserId,
