@@ -12,16 +12,11 @@ class WasteScheduleService {
         ScheduleState,
       });
 
-      const user = await User.findOne({ _id: UserId }).select("-password");
-
-      const location = user.location;
-
       const newSchedule = new WasteSchedule({
         UserId,
         WasteType,
         ScheduledDate,
         ScheduleState,
-        location,
       });
 
       // Log the new schedule object before saving
@@ -78,9 +73,7 @@ class WasteScheduleService {
   static async deleteScheduleData(scheduleId) {
     try {
       // Find the user by email
-      const deleteSchedule = await WasteSchedule.findOneAndDelete({
-        _id: scheduleId,
-      });
+      const deleteSchedule = await WasteSchedule.findOneAndDelete({ _id: scheduleId });
       if (!deleteSchedule) {
         return { success: false, message: "schedule not found" };
       }
