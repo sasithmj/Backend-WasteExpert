@@ -1,14 +1,7 @@
 const SmartBin = require("../models/SmartBinModel");
-const haversine = require("haversine-distance");
 
 class SmartBinService {
-  static async addNewSmartBin(
-    area,
-    locationLat,
-    locationLng,
-    garbageTypes,
-    fillLevel
-  ) {
+  static async addNewSmartBin(area, locationLat, locationLng, garbageTypes, fillLevel) {
     try {
       const newSmartBin = new SmartBin({
         area,

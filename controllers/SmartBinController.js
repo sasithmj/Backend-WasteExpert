@@ -4,8 +4,7 @@ exports.smartBin = async (req, res, next) => {
   console.log("SmartBin function invoked");
 
   try {
-    const { area, locationLat, locationLng, garbageTypes, fillLevel } =
-      req.body.formData;
+    const { area, locationLat, locationLng, garbageTypes, fillLevel } = req.body.formData;
     console.log("Request Body:", req.body);
 
     const newSmartBin = await SmartBinService.addNewSmartBin(
@@ -40,8 +39,7 @@ exports.smartBin = async (req, res, next) => {
 
 exports.getSmartBin = async (req, res, next) => {
   try {
-    const { area, locationLat, locationLng, garbageTypes, fillLevel } =
-      req.body;
+    const { area, locationLat, locationLng, garbageTypes, fillLevel } = req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
