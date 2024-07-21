@@ -57,13 +57,14 @@ exports.addCollector = async (req, res, next) => {
 
 exports.getAllCol = async (req, res, next) => {
   try {
-    const { username, fullName, address, phoneNum, email, vehicalNo } =
+    const { id, username, fullName, address, phoneNum, email, vehicalNo } =
       req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
 
     const successRes = await CollectorService.getAllCol(
+      id,
       username,
       fullName,
       address,
