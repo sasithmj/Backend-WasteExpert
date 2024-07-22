@@ -1,13 +1,14 @@
 const SchedulePickup = require("../models/SchedulePickupModel");
 
 class SchedulePickupService {
-  static async addSchedulePickup(area, date, collector, garbageTypes) {
+  static async addSchedulePickup(area, date, collector, locations, quantity) {
     try {
       const newSchedulePickup = new SchedulePickup({
         area,
         date,
         collector,
-        garbageTypes,
+        locations,
+        quantity
       });
       await newSchedulePickup.save();
       return {
@@ -23,7 +24,7 @@ class SchedulePickupService {
     }
   }
 
-  static async getSmartBin() {
+  static async getSchedulePickup() {
     try {
       const shedulepickups = await SchedulePickup.find({});
       if (!shedulepickups) {
@@ -37,8 +38,9 @@ class SchedulePickupService {
           area: shedulepickup.area, 
           date: shedulepickup.date, 
           collector: shedulepickup.collector, 
-          garbageTypes: shedulepickup.garbageTypes, 
-          Status: shedulepickup.Status
+          Status: shedulepickup.Status,
+          locations: shedulepickup.locations,
+          quantity: shedulepickup.quantity
         })),
       };
 
@@ -47,6 +49,39 @@ class SchedulePickupService {
       throw new Error("Error while fetching smartbin details");
     }
   }
+  
+  static async getSchedulePickupToCollector({ collector }) {
+    try {
+      const schedulePickups = await SchedulePickup.find({ collector });
+      if (!schedulePickups || schedulePickups.length === 0) {
+        return { success: false, message: "No schedule pickups found" };
+      }
+  
+      return {
+        success: true,
+        schedulePickups: schedulePickups.map((pickup) => ({
+          area: pickup.area,
+          date: pickup.date,
+          collector: pickup.collector,
+          status: pickup.status,
+          locations: pickup.locations,
+          quantity: pickup.quantity
+        })),
+      };
+  
+    } catch (error) {
+      console.error("Error while fetching schedule pickups:", error);
+      throw new Error("Error while fetching schedule pickups");
+    }
+  }
+  
+  
+  
+
+
 }
+
+
+
 
 module.exports = SchedulePickupService;

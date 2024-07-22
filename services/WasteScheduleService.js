@@ -75,6 +75,24 @@ class WasteScheduleService {
       throw new Error("Error while updating Schedule");
     }
   }
+
+  static async updateScheduleState(id, date) {
+    try {
+      const schedule = await WasteSchedule.findOne({ _id: id });
+      if (!schedule) {
+        return { success: false, message: "schedule not found" };
+      }
+
+      // Update the schedule state
+      schedule.ScheduleState = "Scheduled"+date;
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+    } catch (error) {
+      throw new Error("Error while updating Schedule");
+    }
+  }
+
   static async deleteScheduleData(scheduleId) {
     try {
       // Find the user by email
@@ -89,6 +107,33 @@ class WasteScheduleService {
       throw new Error("Error while updating Schedule");
     }
   }
+
+  static async getAllScheduleWaste() {
+    try {
+      const allScheduleWaste = await WasteSchedule.find({ScheduleState: "Waiting"});
+      if (!allScheduleWaste) {
+        return { success: false, message: "No Waste Schedule found" };
+      }
+
+      return {
+        success: true,
+        allScheduleWaste: allScheduleWaste.map((scheduleWaste) => ({
+          // Include desired properties from smartbin object
+          id: scheduleWaste.id,
+          UserId: scheduleWaste.UserId,
+          WasteType: scheduleWaste.WasteType,
+          ScheduledDate: scheduleWaste.ScheduledDate,
+          ScheduleState: scheduleWaste.ScheduleState,
+          location: scheduleWaste.location
+        })),
+      };
+
+    } catch (error) {
+      console.error("Error while fetching Waste Schedule details:", error);
+      throw new Error("Error while fetching Waste Schedule details");
+    }
+  }
+
 }
 
 module.exports = WasteScheduleService;

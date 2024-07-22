@@ -57,6 +57,7 @@ class CollectorService {
       return {
         success: true,
         collectors: collectors.map((collector) => ({
+          id: collector.id,
           username: collector.username,
           fullName: collector.fullName,
           address: collector.address,

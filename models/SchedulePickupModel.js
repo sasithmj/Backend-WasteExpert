@@ -3,36 +3,95 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-const schedulePickupSchema = new Schema({
-  area: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    required: true,
-  },
-  collector: {
-    type: mongoose.Schema.Types.ObjectId,
-    // ref: "GarbageCollector", // Assuming you have a GarbageCollector model
-    required: true,
-  },
-  garbageTypes: {
-    type: String,
-    // type: [garbageTypeSchema],
-    required: true,
-  },
-  Status: {
-    type: String,
-    // type: [garbageTypeSchema],
-    default:'pending',
-  },
-});
-schedulePickupSchema.pre("save", async function () {
-  try {
-    var pickupSchedule = this;
-  } catch (error) {}
+const locationSchema = new Schema({
+    lat: {
+        type: Number,
+        required: true,
+    },
+    lng: {
+        type: Number,
+        required: true,
+    }
 });
 
-const SchedulePickupModel = db.model("schedulePickup", schedulePickupSchema);
+const wasteTypeSchema = new Schema({
+    wastetype: {
+        type: String,
+        required: true,
+    },
+    quantity: {
+        type: Number,
+        required: true,
+    }
+});
+
+const locationEntrySchema = new Schema({
+    UserId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    WasteType: [wasteTypeSchema],
+    ScheduledDate: {
+        type: Date,
+        required: true,
+    },
+    ScheduleState: {
+        type: String,
+        required: true,
+    },
+    location: locationSchema
+});
+
+const schedulePickupSchema = new Schema({
+    area: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        required: true,
+    },
+    collector: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "GarbageCollector", // Assuming you have a GarbageCollector model
+        required: true,
+    },
+    status: {
+        type: String,
+        default: 'pending',
+    },
+    locations: [locationEntrySchema],
+    quantity: {
+        Glass: {
+            type: Number,
+            default: 0
+        },
+        Plastic: {
+            type: Number,
+            default: 0
+        },
+        Paper: {
+            type: Number,
+            default: 0
+        },
+        Organic: {
+            type: Number,
+            default: 0
+        },
+        Metal: {
+            type: Number,
+            default: 0
+        }
+    }
+});
+
+schedulePickupSchema.pre("save", async function () {
+    try {
+        var pickupSchedule = this;
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+const SchedulePickupModel = db.model("SchedulePickup", schedulePickupSchema);
 module.exports = SchedulePickupModel;
