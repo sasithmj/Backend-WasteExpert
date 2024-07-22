@@ -31,7 +31,6 @@ class SmartBinService {
     }
   }
 
-
   static async getSmartBin() {
     try {
       const smartbins = await SmartBin.find({});
@@ -43,6 +42,7 @@ class SmartBinService {
         success: true,
         smartbins: smartbins.map((smartbin) => ({
           // Include desired properties from smartbin object
+          id: smartbin._id,
           area: smartbin.area,
           locationLat: smartbin.locationLat,
           locationLng: smartbin.locationLng,
@@ -50,7 +50,6 @@ class SmartBinService {
           fillLevel: smartbin.fillLevel,
         })),
       };
-
     } catch (error) {
       console.error("Error while fetching smartbin details:", error);
       throw new Error("Error while fetching smartbin details");

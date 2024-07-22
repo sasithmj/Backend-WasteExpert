@@ -58,6 +58,10 @@ const userSchema = new Schema({
     type: addressSchema,
     required: false,
   },
+  profilepicture: {
+    type: Buffer,
+    required: false,
+  },
 });
 
 userSchema.pre("save", async function () {

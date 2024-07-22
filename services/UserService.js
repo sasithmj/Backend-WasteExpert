@@ -91,6 +91,37 @@ class UserService {
       throw new Error("Error while fetching user details");
     }
   }
+  static async UpdateUserProfilePicture(email, profilepicture) {
+    try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+
+      // Update the user's location
+      user.profilepicture = profilepicture;
+
+      await user.save();
+
+      return { success: true, message: "Picture updated successfully" };
+    } catch (error) {
+      throw new Error("Error while updating picture", error);
+    }
+  }
+
+  static async getUserById(email) {
+    try {
+      const user = await User.findOne({ email }).select("-password"); // Exclude the password field
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+      return { success: true, user: user };
+    } catch (error) {
+      console.error("Error while fetching user details:", error);
+      throw new Error("Error while fetching user details");
+    }
+  }
 }
 
 module.exports = UserService;

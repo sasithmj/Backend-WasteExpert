@@ -150,7 +150,7 @@ exports.getUserDetails = async (req, res, next) => {
   try {
     const { email } = req.body;
     const successRes = await UserService.getUserById(email);
-
+    console.log(successRes);
     if (successRes.success) {
       res.status(200).json({ status: true, user: successRes.user });
     } else {
@@ -158,6 +158,42 @@ exports.getUserDetails = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.updateProfilePicture = async (req, res, next) => {
+  try {
+    const { email, profilepicture } = req.body;
+
+    // Check if user exists
+    const user = await UserService.checkUser(email);
+
+    if (!user) {
+      // Log detailed error for internal use
+      console.error("Update profile picture Error: User not found");
+
+      // Send generic error response
+      return res.status(401).json({ status: false, error: "Invalid User" });
+    }
+
+    // Update the location
+    const successRes = await UserService.UpdateUserProfilePicture(
+      email,
+      profilepicture
+    );
+
+    // Handle the response based on the successRes
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    // Log the error details
+    console.error("Update profile picture Error:", error);
+
+    // Send internal server error response
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };

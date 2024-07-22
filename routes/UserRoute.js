@@ -6,5 +6,6 @@ route.post("/login", userController.login);
 route.post("/updatelocation", userController.updateLocation);
 route.post("/updateaddress", userController.updateAddress);
 route.post("/userdetails", userController.getUserDetails);
+route.post("/updateprofilepicture", userController.updateProfilePicture);
 
 module.exports = route;

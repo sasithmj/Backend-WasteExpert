@@ -57,7 +57,7 @@ exports.getSmartBin = async (req, res, next) => {
     console.log("Success Response:", successRes);
 
     if (successRes.success) {
-      res.status(201).json({
+      res.status(200).json({
         status: true,
         smartbins: successRes.smartbins,
       });
