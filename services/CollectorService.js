@@ -1,6 +1,13 @@
 const Collector = require("../models/CollectorModel");
+const User = require('../models/Usermodel');
+const AdminService = require('./AdminService');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
+const GarbageWeight = require('../models/GarbageWeightModel'); // Add this line to import the new model
+const Reward = require('../models/RewardsModel'); // Add this line to import the Rewards model
+const RewardsModel = require("../models/RewardsModel");
+const GarbageWeightModel = require("../models/GarbageWeightModel");
 class CollectorService {
   static async loginCollector(username, password) {
     try {
@@ -71,6 +78,50 @@ class CollectorService {
       throw new Error("Error while fetching collector details");
     }
   }
+
+static async addGarbageWeight(userId, quantity, wasteType) {
+    try {
+      let reward = await RewardsModel.findOne({ userId });
+      
+      if (!reward) {
+        reward = new RewardsModel({
+          userId,
+          quantity,
+          points: 0,
+        });
+        await reward.save();
+      }
+
+      const rewardPoints = calculateRewardPoints(quantity, wasteType);
+
+      const garbageWeight = new GarbageWeightModel({
+        userId,
+        quantity,
+        wasteType,
+        rewardPoints,
+        rewardId: reward._id,
+        withdrawnRewards: 0,
+      });
+
+      await garbageWeight.save();
+
+      return { success: true, message: "Garbage weight added successfully" };
+    } catch (error) {
+      console.error("Error adding garbage weight:", error);
+      return { success: false, message: "Error adding garbage weight" };
+    }
+  }
+}
+
+function calculateRewardPoints(quantity, wasteType) {
+  const pointRates = {
+    Organic: 10,
+    Glass: 5,
+    Metal: 20,
+    Paper: 10,
+    Plastic: 15
+  };
+  return quantity * (pointRates[wasteType] || 0);
 }
 
 module.exports = CollectorService;

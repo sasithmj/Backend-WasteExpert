@@ -1,6 +1,8 @@
 // AdminService.js
-
+const RewardModel = require("../models/RewardsModel");
+const GarbageWeightModel = require("../models/GarbageWeightModel");
 const Admin = require("../models/AdminModel");
+const UserModel = require("../models/Usermodel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -78,6 +80,28 @@ class AdminService {
       throw new Error("Error while fetching smartbin details");
     }
   }
+
+
+ static async getRewards() {
+  try {
+    const rewards = await GarbageWeightModel.find({}).populate({
+      path: 'userId',
+      model: UserModel, // Use the UserModel explicitly
+    });
+
+    return {
+      success: true,
+      rewards: rewards.map(reward => ({
+        userId: reward.userId._id,
+        currentBalance: reward.rewardPoints,
+        withdrawnRewards: reward.withdrawnRewards,
+      })),
+    };
+  } catch (error) {
+    console.error("Error fetching rewards:", error);
+    return { success: false, message: "Error fetching rewards" };
+  }
+}
 }
 
 module.exports = AdminService;

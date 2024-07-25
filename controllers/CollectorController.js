@@ -1,4 +1,5 @@
 const CollectorService = require("../services/CollectorService");
+const User = require('../models/Usermodel');
 
 
 
@@ -86,5 +87,35 @@ exports.getAllCol = async (req, res, next) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.addGarbageWeight = async (req, res, next) => {
+  try {
+    const { quantity, wasteType, userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ status: false, error: 'User ID is required' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ status: false, error: 'User not found' });
+    }
+
+    const successRes = await CollectorService.addGarbageWeight(userId, quantity, wasteType);
+
+    if (successRes.success) {
+      res.status(201).json({
+        status: true,
+        message: successRes.message,
+        rewards: successRes.rewards
+      });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error('Error adding garbage weight:', error);
+    res.status(500).json({ status: false, error: 'Internal Server Error' });
   }
 };

@@ -1,6 +1,8 @@
 // AdminController.js
 
 const AdminService = require("../services/AdminService");
+
+
 const bcrypt = require("bcrypt");
 
 exports.register = async (req, res, next) => {
@@ -134,3 +136,18 @@ exports.getAllAdmin = async (req, res, next) => {
     console.error("Error:", error);
   }
 };
+
+exports.getRewards = async (req, res, next) => {
+  try {
+    const successRes = await AdminService.getRewards();
+    if (successRes.success) {
+      res.status(200).json({ status: true, rewards: successRes.rewards });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error('Error fetching rewards:', error);
+    res.status(500).json({ status: false, error: 'Internal Server Error' });
+  }
+};
+

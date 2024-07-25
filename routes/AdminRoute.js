@@ -6,5 +6,9 @@ route.post("/login", adminController.login);
 route.post("/addAdmin", adminController.addAdmin);
 route.post("/getAllAdmin", adminController.getAllAdmin);
 
+
+
+route.get("/getRewards", adminController.getRewards);
+
 module.exports = route;
 

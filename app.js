@@ -32,6 +32,7 @@ app.use("/", userRoute);
 app.use("/admin", AdminRoute);
 app.use("/schedule", scheduleRoute);
 app.use("/reportWaste", WasteReportRoute);
+app.use("/collector", CollectorRoute);
 
 
 //web
