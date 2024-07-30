@@ -92,7 +92,7 @@ exports.getAllCol = async (req, res, next) => {
 
 exports.addGarbageWeight = async (req, res, next) => {
   try {
-    const { wasteList, userId } = req.body;
+    const { wasteList, userId, scheduleId } = req.body;
 
     if (!userId) {
       return res.status(400).json({ status: false, error: 'User ID is required' });
@@ -107,13 +107,12 @@ exports.addGarbageWeight = async (req, res, next) => {
       return res.status(400).json({ status: false, error: 'wasteList must be an array' });
     }
 
-    const successRes = await CollectorService.addGarbageWeight(userId, wasteList);
+    const successRes = await CollectorService.addGarbageWeight(userId, wasteList, scheduleId);
 
     if (successRes.success) {
       res.status(201).json({
         status: true,
         message: successRes.message,
-        rewards: successRes.rewards
       });
     } else {
       res.status(400).json({ status: false, error: successRes.message });

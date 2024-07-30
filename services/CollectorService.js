@@ -5,8 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const GarbageWeight = require('../models/GarbageWeightModel'); // Add this line to import the new model
-const Reward = require('../models/RewardsModel'); // Add this line to import the Rewards model
-const RewardsModel = require("../models/RewardsModel");
+
 const GarbageWeightModel = require("../models/GarbageWeightModel");
 class CollectorService {
   static async loginCollector(username, password) {
@@ -79,19 +78,8 @@ class CollectorService {
     }
   }
 
- static async addGarbageWeight(userId, wasteList) {
+static async addGarbageWeight(userId, wasteList, scheduleId) {
     try {
-      let reward = await RewardsModel.findOne({ userId });
-      
-      if (!reward) {
-        reward = new RewardsModel({
-          userId,
-          quantity: 0,
-          points: 0,
-        });
-        await reward.save();
-      }
-
       for (let waste of wasteList) {
         const { quantity, wasteType } = waste;
 
@@ -102,7 +90,7 @@ class CollectorService {
           quantity,
           wasteType,
           rewardPoints,
-          rewardId: reward._id,
+          scheduleId,
           withdrawnRewards: 0,
         });
 
@@ -127,6 +115,5 @@ function calculateRewardPoints(quantity, wasteType) {
   };
   return quantity * (pointRates[wasteType] || 0);
 }
-
 
 module.exports = CollectorService;
