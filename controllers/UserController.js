@@ -168,32 +168,25 @@ exports.updateProfilePicture = async (req, res, next) => {
 
     // Check if user exists
     const user = await UserService.checkUser(email);
-
     if (!user) {
-      // Log detailed error for internal use
-      console.error("Update profile picture Error: User not found");
-
-      // Send generic error response
       return res.status(401).json({ status: false, error: "Invalid User" });
     }
+  
+    // Decode the base64 image data
+    const buffer = Buffer.from(profilepicture, "base64");
 
-    // Update the location
+    // Update the user's profile picture
     const successRes = await UserService.UpdateUserProfilePicture(
       email,
-      profilepicture
+      buffer
     );
 
-    // Handle the response based on the successRes
     if (successRes.success) {
       res.status(200).json({ status: true, success: successRes.message });
     } else {
       res.status(400).json({ status: false, error: successRes.message });
     }
   } catch (error) {
-    // Log the error details
-    console.error("Update profile picture Error:", error);
-
-    // Send internal server error response
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };

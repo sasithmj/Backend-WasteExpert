@@ -93,15 +93,13 @@ class UserService {
   }
   static async UpdateUserProfilePicture(email, profilepicture) {
     try {
-      // Find the user by email
       const user = await User.findOne({ email });
       if (!user) {
         return { success: false, message: "User not found" };
       }
 
-      // Update the user's location
+      // Save the image buffer
       user.profilepicture = profilepicture;
-
       await user.save();
 
       return { success: true, message: "Picture updated successfully" };
@@ -112,11 +110,20 @@ class UserService {
 
   static async getUserById(email) {
     try {
-      const user = await User.findOne({ email }).select("-password"); // Exclude the password field
+      const user = await User.findOne({ email }).select("-password");
       if (!user) {
         return { success: false, message: "User not found" };
       }
-      return { success: true, user: user };
+
+      // Convert profile picture buffer to base64 string
+      const profilePictureBase64 = user.profilepicture
+        ? user.profilepicture.toString("base64")
+        : null;
+
+      return {
+        success: true,
+        user: { ...user._doc, profilepicture: profilePictureBase64 },
+      };
     } catch (error) {
       console.error("Error while fetching user details:", error);
       throw new Error("Error while fetching user details");

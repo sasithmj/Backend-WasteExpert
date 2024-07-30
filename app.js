@@ -1,5 +1,5 @@
 // app.js
-
+var multer = require("multer");
 const express = require("express");
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/UserRoute");
@@ -11,16 +11,57 @@ const AdminRoute = require("./routes/AdminRoute");
 const DispatcherRoute = require("./routes/DispatcherRoute");
 const CollectorRoute = require("./routes/CollectorRoute");
 const WasteReportRoute = require("./routes/WasteReportRoute");
-
+const NotificationRoute = require("./routes/NotificationRoute");
+const admin = require("firebase-admin");
 const cors = require("cors");
 
 const app = express();
+
+// Import the functions you need from the SDKs you need
+const { initializeApp } = require("firebase/app");
+// const { getAnalytics } = require("firebase/analytics");
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyD8T6W099hSsFf-WTiQC6-rW4VzklR6qNg",
+  authDomain: "wasteexpert-64848.firebaseapp.com",
+  projectId: "wasteexpert-64848",
+  storageBucket: "wasteexpert-64848.appspot.com",
+  messagingSenderId: "961049919020",
+  appId: "1:961049919020:web:6fa3ef5af8eb7ab64fdb89",
+  measurementId: "G-K7ZBZHDWQD",
+};
+
+const serviceAccount = require("./wasteexpert-64848-firebase-adminsdk-zkb52-f7fe7784c0.json"); // Ensure you have the service account key
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://<DATABASE_NAME>.firebaseio.com", // Replace with your database URL
+});
+
+// Initialize Firebase
+const firebaseapp = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(firebaseapp);
 
 const corsOptions = {
   origin: "http://localhost:3000",
   optionsSuccessStatus: 200,
   credentials: true,
 };
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + "-" + Date.now());
+  },
+});
+
+var upload = multer({ storage: storage });
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
@@ -33,7 +74,7 @@ app.use("/admin", AdminRoute);
 app.use("/schedule", scheduleRoute);
 app.use("/reportWaste", WasteReportRoute);
 app.use("/collector", CollectorRoute);
-
+app.use("/notification", NotificationRoute);
 
 //web
 app.use("/schedulePickup", schedulePickupRoute);
