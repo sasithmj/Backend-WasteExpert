@@ -79,31 +79,35 @@ class CollectorService {
     }
   }
 
-static async addGarbageWeight(userId, quantity, wasteType) {
+ static async addGarbageWeight(userId, wasteList) {
     try {
       let reward = await RewardsModel.findOne({ userId });
       
       if (!reward) {
         reward = new RewardsModel({
           userId,
-          quantity,
+          quantity: 0,
           points: 0,
         });
         await reward.save();
       }
 
-      const rewardPoints = calculateRewardPoints(quantity, wasteType);
+      for (let waste of wasteList) {
+        const { quantity, wasteType } = waste;
 
-      const garbageWeight = new GarbageWeightModel({
-        userId,
-        quantity,
-        wasteType,
-        rewardPoints,
-        rewardId: reward._id,
-        withdrawnRewards: 0,
-      });
+        const rewardPoints = calculateRewardPoints(quantity, wasteType);
 
-      await garbageWeight.save();
+        const garbageWeight = new GarbageWeightModel({
+          userId,
+          quantity,
+          wasteType,
+          rewardPoints,
+          rewardId: reward._id,
+          withdrawnRewards: 0,
+        });
+
+        await garbageWeight.save();
+      }
 
       return { success: true, message: "Garbage weight added successfully" };
     } catch (error) {
@@ -123,5 +127,6 @@ function calculateRewardPoints(quantity, wasteType) {
   };
   return quantity * (pointRates[wasteType] || 0);
 }
+
 
 module.exports = CollectorService;
