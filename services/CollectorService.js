@@ -80,22 +80,22 @@ class CollectorService {
 
 static async addGarbageWeight(userId, wasteList, scheduleId) {
     try {
+      let totalRewardPoints = 0;
+
       for (let waste of wasteList) {
         const { quantity, wasteType } = waste;
-
-        const rewardPoints = calculateRewardPoints(quantity, wasteType);
-
-        const garbageWeight = new GarbageWeightModel({
-          userId,
-          quantity,
-          wasteType,
-          rewardPoints,
-          scheduleId,
-          withdrawnRewards: 0,
-        });
-
-        await garbageWeight.save();
+        totalRewardPoints += calculateRewardPoints(quantity, wasteType);
       }
+
+      const garbageWeight = new GarbageWeightModel({
+        userId,
+        wasteList,
+        rewardPoints: totalRewardPoints,
+        scheduleId,
+        withdrawnRewards: 0,
+      });
+
+      await garbageWeight.save();
 
       return { success: true, message: "Garbage weight added successfully" };
     } catch (error) {
@@ -115,5 +115,6 @@ function calculateRewardPoints(quantity, wasteType) {
   };
   return quantity * (pointRates[wasteType] || 0);
 }
+
 
 module.exports = CollectorService;
