@@ -1,5 +1,6 @@
 const db = require("../config/DBconfig");
 const mongoose = require("mongoose");
+const WasteScheduleModel = require("../models/WasteScheduleModel");
 
 const { Schema } = mongoose;
 
@@ -39,7 +40,13 @@ const locationEntrySchema = new Schema({
         type: String,
         required: true,
     },
-    location: locationSchema
+    location: locationSchema,
+
+    id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "WasteCollectionSchedule",
+        required: true,
+    }
 });
 
 const schedulePickupSchema = new Schema({
@@ -53,7 +60,7 @@ const schedulePickupSchema = new Schema({
     },
     collector: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "GarbageCollector", // Assuming you have a GarbageCollector model
+        ref: "Collectors", 
         required: true,
     },
     status: {
