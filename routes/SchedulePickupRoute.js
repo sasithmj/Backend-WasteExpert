@@ -4,5 +4,6 @@ const schedulePickupController = require("../controllers/SchedulePickupControlle
 route.post("/newschedulepickup", schedulePickupController.newSchedulePickup);
 route.post("/getschedulepickup", schedulePickupController.getShedulePickups);
 route.post("/getSchedulePickupToCollector", schedulePickupController.getSchedulePickupToCollector);
+route.post("/updateSchedules", schedulePickupController.updateSchedules);
 
 module.exports = route;
