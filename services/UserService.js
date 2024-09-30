@@ -91,15 +91,15 @@ class UserService {
       throw new Error("Error while fetching user details");
     }
   }
-  static async UpdateUserProfilePicture(email, profilepicture) {
+  static async UpdateUserProfilePicture(email, profilePicturePath) {
     try {
       const user = await User.findOne({ email });
       if (!user) {
         return { success: false, message: "User not found" };
       }
 
-      // Save the image buffer
-      user.profilepicture = profilepicture;
+      // Save the image path
+      user.profilepicture = profilePicturePath;
       await user.save();
 
       return { success: true, message: "Picture updated successfully" };
@@ -115,14 +115,14 @@ class UserService {
         return { success: false, message: "User not found" };
       }
 
-      // Convert profile picture buffer to base64 string
-      const profilePictureBase64 = user.profilepicture
-        ? user.profilepicture.toString("base64")
+      // Convert profile picture path to accessible URL
+      const profilePictureUrl = user.profilePicturePath
+        ? `/uploads/${path.basename(user.profilePicturePath)}`
         : null;
 
       return {
         success: true,
-        user: { ...user._doc, profilepicture: profilePictureBase64 },
+        user: { ...user._doc, profilePicturePath: profilePictureUrl },
       };
     } catch (error) {
       console.error("Error while fetching user details:", error);

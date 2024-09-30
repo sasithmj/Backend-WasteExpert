@@ -59,7 +59,7 @@ const userSchema = new Schema({
     required: false,
   },
   profilepicture: {
-    type: Buffer,
+    type: String,
     required: false,
   },
 });

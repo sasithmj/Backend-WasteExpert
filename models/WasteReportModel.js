@@ -10,7 +10,7 @@ const wasteReportSchema = new Schema({
     required: true,
   },
   Photo: {
-    type: Buffer,
+    type: String,
     required: false,
   },
   locationLat: {
@@ -36,7 +36,6 @@ const wasteReportSchema = new Schema({
 });
 
 wasteReportSchema.pre("save", async function () {
-
   try {
     var wasteSchedule = this;
   } catch (error) {}

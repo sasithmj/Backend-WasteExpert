@@ -1,4 +1,17 @@
 const UserService = require("../services/UserService");
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Folder to store uploaded files
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+const upload = multer({ storage: storage, dest: "uploads/" });
 
 exports.register = async (req, res, next) => {
   try {
@@ -163,30 +176,52 @@ exports.getUserDetails = async (req, res, next) => {
 };
 
 exports.updateProfilePicture = async (req, res, next) => {
-  try {
-    const { email, profilepicture } = req.body;
-
-    // Check if user exists
-    const user = await UserService.checkUser(email);
-    if (!user) {
-      return res.status(401).json({ status: false, error: "Invalid User" });
+  upload.single("profilepicture")(req, res, async (err) => {
+    if (err) {
+      console.error("Multer Error:", err);
+      return res
+        .status(400)
+        .json({ status: false, error: "File upload failed" });
     }
-  
-    // Decode the base64 image data
-    const buffer = Buffer.from(profilepicture, "base64");
 
-    // Update the user's profile picture
-    const successRes = await UserService.UpdateUserProfilePicture(
-      email,
-      buffer
-    );
+    try {
+      const { email } = req.body;
 
-    if (successRes.success) {
-      res.status(200).json({ status: true, success: successRes.message });
-    } else {
-      res.status(400).json({ status: false, error: successRes.message });
+      // Check if user exists
+      const user = await UserService.checkUser(email);
+      if (!user) {
+        return res.status(401).json({ status: false, error: "Invalid User" });
+      }
+
+      // Ensure a file was uploaded
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ status: false, error: "No file uploaded" });
+      }
+
+      // Save the file path to the database
+      const profilePicturePath = req.file.path;
+
+      const successRes = await UserService.UpdateUserProfilePicture(
+        email,
+        profilePicturePath
+      );
+
+      if (successRes.success) {
+        return res
+          .status(200)
+          .json({ status: true, success: successRes.message });
+      } else {
+        return res
+          .status(400)
+          .json({ status: false, error: successRes.message });
+      }
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      return res
+        .status(500)
+        .json({ status: false, error: "Internal Server Error" });
     }
-  } catch (error) {
-    res.status(500).json({ status: false, error: "Internal Server Error" });
-  }
+  });
 };
