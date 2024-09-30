@@ -1,5 +1,4 @@
 // AdminService.js
-const RewardModel = require("../models/RewardsModel");
 const GarbageWeightModel = require("../models/GarbageWeightModel");
 const Admin = require("../models/AdminModel");
 const UserModel = require("../models/Usermodel");
