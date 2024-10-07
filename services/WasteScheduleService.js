@@ -84,7 +84,8 @@ class WasteScheduleService {
       }
 
       // Update the schedule state
-      schedule.ScheduleState = "Scheduled"+date;
+      schedule.ScheduleState = "Scheduled";
+      schedule.ScheduledDate = date;
       await schedule.save();
 
       return { success: true, message: "Schedule updated successfully" };
@@ -92,6 +93,38 @@ class WasteScheduleService {
       throw new Error("Error while updating Schedule");
     }
   }
+
+  static async updateScheduleStateToFinish(id, date, wasteTypes) {
+    try {
+      const schedule = await WasteSchedule.findOne({ _id: id });
+      if (!schedule) {
+        return { success: false, message: "Schedule not found" };
+      }
+
+      // Log the data being updated for debugging
+      console.log("Updating schedule:", {
+        id,
+        date,
+        wasteTypes
+      });
+
+      // Update the schedule state
+      schedule.ScheduleState = "Completed";
+      schedule.ScheduledDate = date;
+      schedule.WasteType = wasteTypes;
+
+      // Save the updated schedule
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+    } catch (error) {
+      console.error("Error while updating Schedule:", error.message);
+      return { success: false, message: "Error while updating Schedule: " + error.message };
+    }
+  }
+
+
+
 
   static async deleteScheduleData(scheduleId) {
     try {
@@ -110,7 +143,7 @@ class WasteScheduleService {
 
   static async getAllScheduleWaste() {
     try {
-      const allScheduleWaste = await WasteSchedule.find({ScheduleState: "Waiting"});
+      const allScheduleWaste = await WasteSchedule.find({ ScheduleState: "Waiting" });
       if (!allScheduleWaste) {
         return { success: false, message: "No Waste Schedule found" };
       }

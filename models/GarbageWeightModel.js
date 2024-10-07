@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const db = require("../config/DBconfig");
 
-
-
 const { Schema } = mongoose;
 
 const garbageWeightSchema = new Schema({
@@ -11,21 +9,19 @@ const garbageWeightSchema = new Schema({
     ref: 'User', 
     required: true 
   },
-  quantity: { 
-    type: Number, 
-    required: true 
-  },
-  wasteType: { 
-    type: String, 
-    required: true 
-  },
+  wasteList: [
+    {
+      quantity: { type: Number, required: true },
+      wasteType: { type: String, required: true }
+    }
+  ],
   rewardPoints: { 
     type: Number, 
     required: true 
   },
-  rewardId: { 
+  scheduleId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Reward', 
+    ref: 'WasteCollectionSchedule', 
     required: true 
   },
   withdrawnRewards: { 
