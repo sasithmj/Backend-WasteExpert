@@ -86,10 +86,7 @@ exports.updateScheduleState = async (req, res, next) => {
     const { id, date } = req.body;
 
     // Update the location
-    const successRes = await ScheduleService.updateScheduleState(
-      id,
-      date
-    );
+    const successRes = await ScheduleService.updateScheduleState(id, date);
 
     // Handle the response based on the successRes
     if (successRes.success) {
@@ -156,17 +153,18 @@ exports.deleteScheduleData = async (req, res, next) => {
 
 exports.getAllScheduleWaste = async (req, res, next) => {
   try {
-    const { id, UserId, WasteType, ScheduledDate,  ScheduleState, location } = req.body;
+    const { id, UserId, WasteType, ScheduledDate, ScheduleState, location } =
+      req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
 
     const successRes = await ScheduleService.getAllScheduleWaste(
       id,
-      UserId, 
-      WasteType, 
-      ScheduledDate,  
-      ScheduleState, 
+      UserId,
+      WasteType,
+      ScheduledDate,
+      ScheduleState,
       location
     );
     // Log the success response

@@ -92,7 +92,7 @@ exports.getAllCol = async (req, res, next) => {
 
 exports.addGarbageWeight = async (req, res, next) => {
   try {
-    const { quantity, wasteType, userId } = req.body;
+    const { wasteList, userId } = req.body;
 
     if (!userId) {
       return res.status(400).json({ status: false, error: 'User ID is required' });
@@ -103,7 +103,11 @@ exports.addGarbageWeight = async (req, res, next) => {
       return res.status(404).json({ status: false, error: 'User not found' });
     }
 
-    const successRes = await CollectorService.addGarbageWeight(userId, quantity, wasteType);
+    if (!Array.isArray(wasteList)) {
+      return res.status(400).json({ status: false, error: 'wasteList must be an array' });
+    }
+
+    const successRes = await CollectorService.addGarbageWeight(userId, wasteList);
 
     if (successRes.success) {
       res.status(201).json({
