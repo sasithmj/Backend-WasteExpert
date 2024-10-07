@@ -1,10 +1,9 @@
-const ReportSchedule = require("../models/WasteReportModel");
-const User = require("../models/Usermodel");
+const WasteReportModel = require("../models/WasteReportModel"); // Make sure the path is correct
 
 class WasteReportService {
   static async reportWaste(
     UserId,
-    Photo,
+    photoPath,
     locationLat,
     locationLng,
     ReportDate,
@@ -12,46 +11,31 @@ class WasteReportService {
     WasteTypes
   ) {
     try {
-
-      console.log("Data to be saved in ReportService:", {
+      const newReport = new WasteReportModel({
         UserId,
-        Photo,
+        Photo: photoPath, // Save the path to the database
         locationLat,
         locationLng,
         ReportDate,
         Description,
         WasteTypes,
       });
-
-      // console.log("Data to be saved in ReportService:", {
-      //   UserId,
-      //   Photo,
-      //   locationLat,
-      //   locationLng,
-      //   ReportDate,
-      //   Description,
-      //   WasteTypes,
-      // });
-
-
-      const newReport = new ReportSchedule({
-        UserId,
-        Photo,
-        locationLat,
-        locationLng,
-        ReportDate,
-        Description,
-        WasteTypes,
-      });
-
-      // Log the new schedule object before saving
-      console.log("New Report Object:", newReport);
 
       await newReport.save();
       return { success: true, message: "New Report Placed" };
     } catch (error) {
-      console.error("Error while saving waste Report:", error);
-      throw new Error(`Error while Report waste: ${error}`);
+      console.error("Error while saving waste report:", error);
+      throw new Error(`Error while reporting waste: ${error}`);
+    }
+  }
+
+  static async getReportsByUserId(UserId) {
+    try {
+      const reports = await WasteReportModel.find({ UserId }).exec();
+      return { success: true, data: reports };
+    } catch (error) {
+      console.error("Error while retrieving waste reports:", error);
+      throw new Error(`Error while retrieving waste reports: ${error}`);
     }
   }
 }
