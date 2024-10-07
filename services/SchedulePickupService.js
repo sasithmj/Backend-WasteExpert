@@ -35,9 +35,9 @@ class SchedulePickupService {
         success: true,
         shedulepickups: shedulepickups.map((shedulepickup) => ({
           // Include desired properties from smartbin object
-          area: shedulepickup.area, 
-          date: shedulepickup.date, 
-          collector: shedulepickup.collector, 
+          area: shedulepickup.area,
+          date: shedulepickup.date,
+          collector: shedulepickup.collector,
           Status: shedulepickup.Status,
           locations: shedulepickup.locations,
           quantity: shedulepickup.quantity
@@ -49,14 +49,14 @@ class SchedulePickupService {
       throw new Error("Error while fetching smartbin details");
     }
   }
-  
+
   static async getSchedulePickupToCollector({ collector }) {
     try {
       const schedulePickups = await SchedulePickup.find({ collector });
       if (!schedulePickups || schedulePickups.length === 0) {
         return { success: false, message: "No schedule pickups found" };
       }
-  
+
       return {
         success: true,
         schedulePickups: schedulePickups.map((pickup) => ({
@@ -68,15 +68,40 @@ class SchedulePickupService {
           quantity: pickup.quantity
         })),
       };
-  
+
     } catch (error) {
       console.error("Error while fetching schedule pickups:", error);
       throw new Error("Error while fetching schedule pickups");
     }
   }
-  
-  
-  
+
+  static async updateScheduleLocationInPickup(schedulePickupId, locationId, wasteTypes) {
+    try {
+      // Use MongoDB's arrayFilters to update only the specific location in the array
+      const result = await SchedulePickup.findOneAndUpdate(
+        { _id: schedulePickupId, "locations.id": locationId }, // Find the schedule and the specific location
+        {
+          $set: {
+            "locations.$.WasteType": wasteTypes, // Update the WasteType array
+            "locations.$.ScheduleState": "Completed" // Update status to 'Completed'
+          }
+        }, // Update the WasteType for the matched location
+        { new: true } // Return the updated document
+      );
+
+      if (!result) {
+        return { success: false, message: "Schedule or location not found" };
+      }
+
+      return { success: true, message: "Location's waste types updated successfully" };
+    } catch (error) {
+      console.error("Error while updating location waste types:", error.message);
+      return { success: false, message: "Error while updating location waste types: " + error.message };
+    }
+  }
+
+
+
 
 
 }
