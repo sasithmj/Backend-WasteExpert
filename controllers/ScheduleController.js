@@ -107,24 +107,20 @@ exports.updateScheduleStateToFinish = async (req, res, next) => {
   try { 
     const { id, date, wasteTypes } = req.body;
 
-    // Update the location
     const successRes = await ScheduleService.updateScheduleStateToFinish(
       id, 
       date, 
-      wasteTypes);
+      wasteTypes
+    );
 
 
-    // Handle the response based on the successRes
     if (successRes.success) {
       res.status(200).json({ status: true, success: successRes.message });
     } else {
       res.status(400).json({ status: false, error: successRes.message });
     }
   } catch (error) {
-    // Log the error details
     console.error("Update schedule Error:", error);
-
-    // Send internal server error response
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
