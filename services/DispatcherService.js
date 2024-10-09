@@ -18,7 +18,7 @@ class DispatcherService {
 
       // Generate token
       const token = jwt.sign(
-        { _id: dispatcher._id, email: dispatcher.email },
+        { _id: dispatcher._id, email: dispatcher.email, userType: "dispatcher" },
         "secretkey",
         { expiresIn: "120h" }
       );

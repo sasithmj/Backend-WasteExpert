@@ -2,7 +2,6 @@
 
 const AdminService = require("../services/AdminService");
 
-
 const bcrypt = require("bcrypt");
 
 exports.register = async (req, res, next) => {
@@ -48,6 +47,7 @@ exports.login = async (req, res, next) => {
       _id: admin._id,
       email: admin.email,
       username: admin.username,
+      userType: "admin",
     };
     const token = await AdminService.generateToken(
       tokenData,
@@ -146,8 +146,7 @@ exports.getRewards = async (req, res, next) => {
       res.status(400).json({ status: false, error: successRes.message });
     }
   } catch (error) {
-    console.error('Error fetching rewards:', error);
-    res.status(500).json({ status: false, error: 'Internal Server Error' });
+    console.error("Error fetching rewards:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
-

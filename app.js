@@ -36,16 +36,16 @@ const firebaseConfig = {
   measurementId: "G-K7ZBZHDWQD",
 };
 
-//  const serviceAccount = require("./wasteexpert-64848-firebase-adminsdk-zkb52-f7fe7784c0.json"); // Ensure you have the service account key
+const serviceAccount = require("./wasteexpert-64848-firebase-adminsdk-zkb52-f7fe7784c0.json"); // Ensure you have the service account key
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://<DATABASE_NAME>.firebaseio.com", // Replace with your database URL
-// });
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://<DATABASE_NAME>.firebaseio.com", // Replace with your database URL
+});
 
-// // Initialize Firebase
-// const firebaseapp = initializeApp(firebaseConfig);
-// // const analytics = getAnalytics(firebaseapp);
+// Initialize Firebase
+const firebaseapp = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(firebaseapp);
 
 const corsOptions = {
   origin: "http://localhost:3000",

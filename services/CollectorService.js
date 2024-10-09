@@ -1,17 +1,17 @@
 const Collector = require("../models/CollectorModel");
-const User = require('../models/Usermodel');
-const AdminService = require('./AdminService');
+const User = require("../models/Usermodel");
+const AdminService = require("./AdminService");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const GarbageWeight = require('../models/GarbageWeightModel'); // Add this line to import the new model
+const GarbageWeight = require("../models/GarbageWeightModel"); // Add this line to import the new model
 
 const GarbageWeightModel = require("../models/GarbageWeightModel");
 class CollectorService {
-  static async loginCollector(username, password) {
+  static async loginCollector(email, password) {
     try {
       // Find collector by username
-      const collector = await Collector.findOne({ username });
+      const collector = await Collector.findOne({ email });
       if (!collector) {
         return { success: false, message: "Collector not found" };
       }
@@ -24,7 +24,11 @@ class CollectorService {
 
       // Generate token
       const token = await jwt.sign(
-        { _id: collector._id, username: collector.username },
+        {
+          _id: collector._id,
+          username: collector.username,
+          userType: "collector",
+        },
         "secretkey",
         { expiresIn: "120h" }
       );
@@ -78,7 +82,7 @@ class CollectorService {
     }
   }
 
-static async addGarbageWeight(userId, wasteList, scheduleId) {
+  static async addGarbageWeight(userId, wasteList, scheduleId) {
     try {
       let totalRewardPoints = 0;
 
@@ -111,10 +115,9 @@ function calculateRewardPoints(quantity, wasteType) {
     Glass: 5,
     Metal: 20,
     Paper: 10,
-    Plastic: 15
+    Plastic: 15,
   };
   return quantity * (pointRates[wasteType] || 0);
 }
-
 
 module.exports = CollectorService;
