@@ -71,12 +71,12 @@ exports.getShedulePickups = async (req, res, next) => {
 
 exports.getSchedulePickupToCollector = async (req, res, next) => {
   try {
-    const { area, date, collector, status, locations, quantity } = req.body;
+    const { id, area, date, collector, status, locations, quantity } = req.body;
 
     console.log("Request Body:", req.body);
 
     const successRes = await SchedulePickupService.getSchedulePickupToCollector(
-      { area, date, collector, status, locations, quantity }
+      { id, area, date, collector, status, locations, quantity }
     );
 
     console.log("Success Response:", successRes);
@@ -95,12 +95,47 @@ exports.getSchedulePickupToCollector = async (req, res, next) => {
   }
 };
 
-
 exports.updateScheduleLocationInPickup = async (req, res, next) => {
   try {
     const { id, locationId, wasteTypes } = req.body; // Receive schedule _id, locationId, and wasteTypes from request
 
     const successRes = await SchedulePickupService.updateScheduleLocationInPickup(id, locationId, wasteTypes);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+
+  } catch (error) {
+    console.error("Update schedule Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.startSchedulePickup = async (req, res, next) => {
+  try {
+    const { id } = req.body; // Receive schedule _id, locationId, and wasteTypes from request
+
+    const successRes = await SchedulePickupService.startSchedulePickup(id);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+
+  } catch (error) {
+    console.error("Update schedule Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.finishSchedulePickup = async (req, res, next) => {
+  try {
+    const { id } = req.body; // Receive schedule _id, locationId, and wasteTypes from request
+
+    const successRes = await SchedulePickupService.finishSchedulePickup(id);
 
     if (successRes.success) {
       res.status(200).json({ status: true, success: successRes.message });

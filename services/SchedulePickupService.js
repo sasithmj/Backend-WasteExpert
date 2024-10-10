@@ -60,6 +60,7 @@ class SchedulePickupService {
       return {
         success: true,
         schedulePickups: schedulePickups.map((pickup) => ({
+          id: pickup._id,
           area: pickup.area,
           date: pickup.date,
           collector: pickup.collector,
@@ -100,9 +101,55 @@ class SchedulePickupService {
     }
   }
 
+  static async startSchedulePickup(id) {
+    try {
 
+      const schedule = await SchedulePickup.findOne({ _id: id });
+      if (!schedule) {
+        return { success: false, message: "Schedule not found" };
+      }
 
+      // Log the data being updated for debugging
+      console.log("Updating schedule:", {
+        id
+      });
 
+      // update and save schedule
+      schedule.status = "Started";
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+
+    } catch (error) {
+      console.error("Error while updating Schedule:", error.message);
+      return { success: false, message: "Error while updating Schedule: " + error.message };
+    }
+  }
+
+  static async finishSchedulePickup(id) {
+    try {
+
+      const schedule = await SchedulePickup.findOne({ _id: id });
+      if (!schedule) {
+        return { success: false, message: "Schedule not found" };
+      }
+
+      // Log the data being updated for debugging
+      console.log("Updating schedule:", {
+        id
+      });
+
+      // update and save schedule
+      schedule.status = "Finished";
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+
+    } catch (error) {
+      console.error("Error while updating Schedule:", error.message);
+      return { success: false, message: "Error while updating Schedule: " + error.message };
+    }
+  }
 
 }
 
