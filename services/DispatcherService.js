@@ -58,6 +58,7 @@ class DispatcherService {
       return {
         success: true,
         dispatchers: dispatchers.map((dispatcher) => ({
+          _id: dispatcher._id,
           username: dispatcher.username,
           fullName: dispatcher.fullName,
           address: dispatcher.address,
@@ -68,6 +69,21 @@ class DispatcherService {
     } catch (error) {
       console.error("Error while fetching smartbin details:", error);
       throw new Error("Error while fetching smartbin details");
+    }
+  }
+
+  static async deleteDispatcher(_id) {
+    try {
+      const deletedDispatcher = await Dispatcher.findByIdAndDelete(_id);
+
+      if (!deletedDispatcher) {
+        return { success: false, message: "Dispatcher not found" };
+      }
+
+      return { success: true, message: "Dispatcher deleted successfully" };
+    } catch (error) {
+      console.error("Error while deleting admin:", error);
+      throw new Error("Error while deleting admin");
     }
   }
 }

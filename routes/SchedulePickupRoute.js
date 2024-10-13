@@ -8,5 +8,6 @@ route.post("/getSchedulePickupToCollector", schedulePickupController.getSchedule
 route.post("/updateScheduleLocationInPickup", schedulePickupController.updateScheduleLocationInPickup);
 route.post("/startSchedulePickup", schedulePickupController.startSchedulePickup);
 route.post("/finishSchedulePickup", schedulePickupController.finishSchedulePickup);
+route.post("/deleteschedulepickup", schedulePickupController.deleteSchedulePickup);
 
 module.exports = route;

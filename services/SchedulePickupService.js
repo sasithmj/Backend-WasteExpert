@@ -34,11 +34,11 @@ class SchedulePickupService {
       return {
         success: true,
         shedulepickups: shedulepickups.map((shedulepickup) => ({
-          // Include desired properties from smartbin object
+          _id: shedulepickup._id,
           area: shedulepickup.area,
           date: shedulepickup.date,
           collector: shedulepickup.collector,
-          Status: shedulepickup.Status,
+          status: shedulepickup.status,
           locations: shedulepickup.locations,
           quantity: shedulepickup.quantity
         })),
@@ -151,7 +151,23 @@ class SchedulePickupService {
     }
   }
 
+  static async deleteSchedulePickup(_id) {
+    try {
+      const deletedSchedulePickup = await SchedulePickup.findByIdAndDelete(_id);
+
+      if (!deletedSchedulePickup) {
+        return { success: false, message: "SchedulePickup not found" };
+      }
+
+      return { success: true, message: "SchedulePickup deleted successfully" };
+    } catch (error) {
+      console.error("Error while deleting SchedulePickup:", error);
+      throw new Error("Error while deleting SchedulePickup");
+    }
+  }
 }
+
+
 
 
 

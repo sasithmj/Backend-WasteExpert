@@ -66,10 +66,12 @@ class AdminService {
       return {
         success: true,
         admins: admins.map((admin) => ({
+          _id: admin._id,
           username: admin.username,
           fullName: admin.fullName,
           address: admin.address,
           email: admin.email,
+          phoneNum: admin.phoneNum,
           role: admin.role,
           jobs: admin.jobs,
         })),
@@ -81,26 +83,43 @@ class AdminService {
   }
 
 
- static async getRewards() {
-  try {
-    const rewards = await GarbageWeightModel.find({}).populate({
-      path: 'userId',
-      model: UserModel, // Use the UserModel explicitly
-    });
+  static async getRewards() {
+    try {
+      const rewards = await GarbageWeightModel.find({}).populate({
+        path: 'userId',
+        model: UserModel, // Use the UserModel explicitly
+      });
 
-    return {
-      success: true,
-      rewards: rewards.map(reward => ({
-        userId: reward.userId._id,
-        currentBalance: reward.rewardPoints,
-        withdrawnRewards: reward.withdrawnRewards,
-      })),
-    };
-  } catch (error) {
-    console.error("Error fetching rewards:", error);
-    return { success: false, message: "Error fetching rewards" };
+      return {
+        success: true,
+        rewards: rewards.map(reward => ({
+          userId: reward.userId._id,
+          currentBalance: reward.rewardPoints,
+          withdrawnRewards: reward.withdrawnRewards,
+        })),
+      };
+    } catch (error) {
+      console.error("Error fetching rewards:", error);
+      return { success: false, message: "Error fetching rewards" };
+    }
   }
-}
+
+  static async deleteAdmin(_id) {
+    try {
+      const deletedAdmin = await Admin.findByIdAndDelete(_id);
+
+      if (!deletedAdmin) {
+        return { success: false, message: "Admin not found" };
+      }
+
+      return { success: true, message: "Admin deleted successfully" };
+    } catch (error) {
+      console.error("Error while deleting admin:", error);
+      throw new Error("Error while deleting admin");
+    }
+  }
+
+
 }
 
 module.exports = AdminService;

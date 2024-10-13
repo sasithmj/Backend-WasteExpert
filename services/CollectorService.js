@@ -67,7 +67,7 @@ class CollectorService {
       return {
         success: true,
         collectors: collectors.map((collector) => ({
-          id: collector.id,
+          _id: collector._id,
           username: collector.username,
           fullName: collector.fullName,
           address: collector.address,
@@ -105,6 +105,21 @@ class CollectorService {
     } catch (error) {
       console.error("Error adding garbage weight:", error);
       return { success: false, message: "Error adding garbage weight" };
+    }
+  }
+
+  static async deleteCollector(_id) {
+    try {
+      const deletedCollector = await Collector.findByIdAndDelete(_id);
+
+      if (!deletedCollector) {
+        return { success: false, message: "Collector not found" };
+      }
+
+      return { success: true, message: "Collector deleted successfully" };
+    } catch (error) {
+      console.error("Error while deleting collector:", error);
+      throw new Error("Error while deleting collector");
     }
   }
 }

@@ -106,13 +106,14 @@ exports.addAdmin = async (req, res, next) => {
 
 exports.getAllAdmin = async (req, res, next) => {
   try {
-    const { username, fullName, address, phoneNum, email, role, jobs } =
+    const {_id, username, fullName, address, phoneNum, email, role, jobs } =
       req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
 
     const successRes = await AdminService.getAllAdmin(
+      _id,
       username,
       fullName,
       address,
@@ -148,5 +149,24 @@ exports.getRewards = async (req, res, next) => {
   } catch (error) {
     console.error("Error fetching rewards:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.deleteAdmin = async (req, res, next) => {
+  try {
+
+    const {_id} = req.body;
+    console.log("Request Body:", req.body);
+
+    const successRes = await AdminService.deleteAdmin(_id);
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error deleting admin:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
