@@ -113,3 +113,29 @@ exports.updateScheduleLocationInPickup = async (req, res, next) => {
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
+
+exports.getSchedulePickupsByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.body; // Assume the userId is passed as a route parameter
+
+    console.log("Request for user pickups:", userId);
+
+    const successRes = await SchedulePickupService.getSchedulePickupsByUserId(
+      userId
+    );
+
+    console.log("Success Response:", successRes);
+
+    if (successRes.success) {
+      res.status(200).json({
+        status: true,
+        schedulePickups: successRes.schedulePickups,
+      });
+    } else {
+      res.status(404).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};

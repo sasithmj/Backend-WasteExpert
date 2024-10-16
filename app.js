@@ -13,6 +13,7 @@ const CollectorRoute = require("./routes/CollectorRoute");
 const WasteReportRoute = require("./routes/WasteReportRoute");
 const NotificationRoute = require("./routes/NotificationRoute");
 const ImageRecognitionRoute = require("./routes/WasteRecognitionRoute");
+const RewardsRoute = require("./routes/RewardsRoute");
 const admin = require("firebase-admin");
 const cors = require("cors");
 
@@ -77,6 +78,7 @@ app.use("/reportWaste", WasteReportRoute);
 app.use("/collector", CollectorRoute);
 app.use("/notification", NotificationRoute);
 app.use("/recognize", ImageRecognitionRoute);
+app.use("/rewards", RewardsRoute);
 
 //web
 app.use("/schedulePickup", schedulePickupRoute);

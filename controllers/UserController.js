@@ -44,6 +44,7 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Check if user exists
+    // const userService = UserService();
     const user = await UserService.checkUser(email);
     if (!user) {
       // Log detailed error for internal use
@@ -142,6 +143,46 @@ exports.updateAddress = async (req, res, next) => {
       zip,
       latitude,
       longitude
+    );
+
+    // Handle the response based on the successRes
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    // Log the error details
+    console.error("Update Address Error:", error);
+
+    // Send internal server error response
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+exports.updateUserData = async (req, res, next) => {
+  try {
+    const { email, name, mobile, street, city, state, zip } = req.body;
+    console("update user");
+
+    // Check if user exists
+    const user = await UserService.checkUser(email);
+    if (!user) {
+      // Log detailed error for internal use
+      console.error("Update Address Error: User not found");
+
+      // Send generic error response
+      return res.status(401).json({ status: false, error: "Invalid User" });
+    }
+
+    // Update the location
+    const successRes = await UserService.UpdateUserData(
+      email,
+      name,
+      mobile,
+      street,
+      city,
+      state,
+      zip
     );
 
     // Handle the response based on the successRes

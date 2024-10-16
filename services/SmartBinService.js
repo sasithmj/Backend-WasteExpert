@@ -80,6 +80,42 @@ class SmartBinService {
       };
     }
   }
+
+  static async updateFillLevel(binId, newFillLevel) {
+    try {
+      const updatedBin = await SmartBin.findByIdAndUpdate(
+        binId,
+        { fillLevel: newFillLevel },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedBin) {
+        return {
+          success: false,
+          message: "Smart bin not found",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Fill level updated successfully",
+        updatedBin: {
+          id: updatedBin._id,
+          area: updatedBin.area,
+          locationLat: updatedBin.locationLat,
+          locationLng: updatedBin.locationLng,
+          garbageTypes: updatedBin.garbageTypes,
+          fillLevel: updatedBin.newFillLevel,
+        },
+      };
+    } catch (error) {
+      console.error("Error in SmartBinService.updateFillLevel:", error);
+      return {
+        success: false,
+        message: "Error updating fill level",
+      };
+    }
+  }
 }
 
 module.exports = SmartBinService;

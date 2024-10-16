@@ -1,5 +1,6 @@
 const User = require("../models/Usermodel");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 class UserService {
   static async registerUser(name, email, password, mobile) {
@@ -28,6 +29,16 @@ class UserService {
       return existingUser;
     } catch (error) {
       throw error;
+    }
+  }
+  static async comparePassword(user, password) {
+    try {
+      const isMatch = await bcrypt.compare(user, password);
+      console.log(isMatch);
+      return isMatch;
+    } catch (error) {
+      console.error("Error comparing password:", error);
+      return false;
     }
   }
   static async updateUserLocation(email, lat, lng) {
@@ -71,6 +82,26 @@ class UserService {
       // Update the user's location
       user.address = { street, city, state, zip };
       user.location = { lat: latitude, lng: longitude };
+      await user.save();
+
+      return { success: true, message: "Address updated successfully" };
+    } catch (error) {
+      throw new Error("Error while updating location", error);
+    }
+  }
+  static async UpdateUserData(email, name, mobile, street, city, state, zip) {
+    try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return { success: false, message: "User not found" };
+      }
+
+      // Update the user's location
+      user.name = name;
+      user.mobile = mobile;
+      user.address = { street, city, state, zip };
+      // user.location = { lat: latitude, lng: longitude };
       await user.save();
 
       return { success: true, message: "Address updated successfully" };

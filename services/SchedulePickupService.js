@@ -8,7 +8,7 @@ class SchedulePickupService {
         date,
         collector,
         locations,
-        quantity
+        quantity,
       });
       await newSchedulePickup.save();
       return {
@@ -40,10 +40,9 @@ class SchedulePickupService {
           collector: shedulepickup.collector,
           Status: shedulepickup.Status,
           locations: shedulepickup.locations,
-          quantity: shedulepickup.quantity
+          quantity: shedulepickup.quantity,
         })),
       };
-
     } catch (error) {
       console.error("Error while fetching smartbin details:", error);
       throw new Error("Error while fetching smartbin details");
@@ -65,17 +64,20 @@ class SchedulePickupService {
           collector: pickup.collector,
           status: pickup.status,
           locations: pickup.locations,
-          quantity: pickup.quantity
+          quantity: pickup.quantity,
         })),
       };
-
     } catch (error) {
       console.error("Error while fetching schedule pickups:", error);
       throw new Error("Error while fetching schedule pickups");
     }
   }
 
-  static async updateScheduleLocationInPickup(schedulePickupId, locationId, wasteTypes) {
+  static async updateScheduleLocationInPickup(
+    schedulePickupId,
+    locationId,
+    wasteTypes
+  ) {
     try {
       // Use MongoDB's arrayFilters to update only the specific location in the array
       const result = await SchedulePickup.findOneAndUpdate(
@@ -83,8 +85,8 @@ class SchedulePickupService {
         {
           $set: {
             "locations.$.WasteType": wasteTypes, // Update the WasteType array
-            "locations.$.ScheduleState": "Completed" // Update status to 'Completed'
-          }
+            "locations.$.ScheduleState": "Completed", // Update status to 'Completed'
+          },
         }, // Update the WasteType for the matched location
         { new: true } // Return the updated document
       );
@@ -93,20 +95,54 @@ class SchedulePickupService {
         return { success: false, message: "Schedule or location not found" };
       }
 
-      return { success: true, message: "Location's waste types updated successfully" };
+      return {
+        success: true,
+        message: "Location's waste types updated successfully",
+      };
     } catch (error) {
-      console.error("Error while updating location waste types:", error.message);
-      return { success: false, message: "Error while updating location waste types: " + error.message };
+      console.error(
+        "Error while updating location waste types:",
+        error.message
+      );
+      return {
+        success: false,
+        message: "Error while updating location waste types: " + error.message,
+      };
     }
   }
 
+  static async getSchedulePickupsByUserId(userId) {
+    try {
+      const schedulePickups = await SchedulePickup.find({
+        "locations.UserId": userId,
+      });
 
+      if (!schedulePickups || schedulePickups.length === 0) {
+        return {
+          success: false,
+          message: "No schedule pickups found for this user",
+        };
+      }
 
-
-
+      return {
+        success: true,
+        schedulePickups: schedulePickups.map((pickup) => ({
+          _id: pickup._id,
+          area: pickup.area,
+          date: pickup.date,
+          collector: pickup.collector,
+          status: pickup.status,
+          locations: pickup.locations.filter(
+            (location) => location.UserId.toString() === userId
+          ),
+          quantity: pickup.quantity,
+        })),
+      };
+    } catch (error) {
+      console.error("Error while fetching schedule pickups for user:", error);
+      throw new Error("Error while fetching schedule pickups for user");
+    }
+  }
 }
-
-
-
 
 module.exports = SchedulePickupService;
