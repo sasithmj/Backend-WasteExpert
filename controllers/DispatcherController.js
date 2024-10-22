@@ -109,3 +109,47 @@ exports.deleteDispatcher = async (req, res, next) => {
     return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
+
+exports.updateDispatcher = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email } = req.body;
+
+    const successRes = await DispatcherService.updateDispatcher(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, dispatcher: successRes.dispatcher });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating dispatcher:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateDispatcherbyUser = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email } = req.body;
+
+    const successRes = await DispatcherService.updateDispatcherbyUser(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, dispatcher: successRes.dispatcher });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};

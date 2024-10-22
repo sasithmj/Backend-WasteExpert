@@ -141,3 +141,49 @@ exports.deleteCollector = async (req, res, next) => {
     return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
+
+exports.updateCollector = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email, vehicalNo } = req.body;
+
+    const successRes = await CollectorService.updateCollector(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+      vehicalNo
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, collector: successRes.collector });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating collector:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateCollectorbyUser = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email, vehicalNo } = req.body;
+
+    const successRes = await CollectorService.updateCollectorbyUser(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+      vehicalNo
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, collector: successRes.collector });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};

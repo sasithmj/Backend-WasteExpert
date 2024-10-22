@@ -52,7 +52,7 @@ class DispatcherService {
     try {
       const dispatchers = await Dispatcher.find({});
       if (!dispatchers) {
-        return { success: false, message: "No Smartbin found" };
+        return { success: false, message: "No Dispatcher found" };
       }
 
       return {
@@ -67,8 +67,8 @@ class DispatcherService {
         })),
       };
     } catch (error) {
-      console.error("Error while fetching smartbin details:", error);
-      throw new Error("Error while fetching smartbin details");
+      console.error("Error while fetching Dispatcher details:", error);
+      throw new Error("Error while fetching smaDispatcherrtbin details");
     }
   }
 
@@ -82,10 +82,55 @@ class DispatcherService {
 
       return { success: true, message: "Dispatcher deleted successfully" };
     } catch (error) {
-      console.error("Error while deleting admin:", error);
-      throw new Error("Error while deleting admin");
+      console.error("Error while deleting dispatcher:", error);
+      throw new Error("Error while deleting dispatcher");
     }
   }
+
+  static async updateDispatcher(_id, updateData) {
+    try {
+      const { fullName, address, phoneNum, email } = updateData;
+  
+      // Only update the fields that are provided
+      const updatedDispatcher = await Dispatcher.findByIdAndUpdate(
+        _id,
+        { fullName, address, phoneNum, email },
+        { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
+      );
+  
+      if (!updatedDispatcher) {
+        return { success: false, message: "Dispatcher not found" };
+      }
+  
+      return { success: true, message: "Dispatcher updated successfully", dispatcher: updatedDispatcher };
+    } catch (error) {
+      console.error("Error while updating dispatcher:", error);
+      return { success: false, message: "Error updating dispatcher" };
+    }
+  }
+
+  static async updateDispatcherbyUser(_id, updateData) {
+    try {
+      const { fullName, address, phoneNum, email } = updateData;
+  
+      // Only update the fields that are provided
+      const updatedDispatcher = await Dispatcher.findByIdAndUpdate(
+        _id,
+        { fullName, address, phoneNum, email },
+        { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
+      );
+  
+      if (!updatedDispatcher) {
+        return { success: false, message: "Dispatcher not found" };
+      }
+  
+      return { success: true, message: "Dispatcher updated successfully", dispatcher: updatedDispatcher };
+    } catch (error) {
+      console.error("Error while updating dispatcher:", error);
+      return { success: false, message: "Error updating dispatcher" };
+    }
+  }
+
 }
 
 module.exports = DispatcherService;

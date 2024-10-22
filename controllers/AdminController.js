@@ -170,3 +170,50 @@ exports.deleteAdmin = async (req, res, next) => {
     return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
+
+exports.updateAdmin = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email, role } = req.body;
+
+    const successRes = await AdminService.updateAdmin(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+      role
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, admin: successRes.admin });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating admin:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateAdminbyUser = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email } = req.body;
+
+    const successRes = await AdminService.updateAdminbyUser(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, admin: successRes.admin });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating admin:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+

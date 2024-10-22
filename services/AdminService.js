@@ -119,6 +119,51 @@ class AdminService {
     }
   }
 
+  static async updateAdmin(_id, updateData) {
+    try {
+      const { fullName, address, phoneNum, email, role } = updateData;
+  
+      // Only update the fields that are provided
+      const updatedAdmin = await Admin.findByIdAndUpdate(
+        _id,
+        { fullName, address, phoneNum, email, role },
+        { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
+      );
+  
+      if (!updatedAdmin) {
+        return { success: false, message: "Admin not found" };
+      }
+  
+      return { success: true, message: "Admin updated successfully", admin: updatedAdmin };
+    } catch (error) {
+      console.error("Error while updating admin:", error);
+      return { success: false, message: "Error updating admin" };
+    }
+  }
+
+  static async updateAdminbyUser(_id, updateData) {
+    try {
+      const { fullName, address, phoneNum, email} = updateData;
+  
+      // Only update the fields that are provided
+      const updatedAdmin = await Admin.findByIdAndUpdate(
+        _id,
+        { fullName, address, phoneNum, email, },
+        { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
+      );
+  
+      if (!updatedAdmin) {
+        return { success: false, message: "Admin not found" };
+      }
+  
+      return { success: true, message: "Updated successfully", admin: updatedAdmin };
+    } catch (error) {
+      console.error("Error while updating:", error);
+      return { success: false, message: "Error updating" };
+    }
+  }
+  
+
 
 }
 
