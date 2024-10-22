@@ -97,3 +97,34 @@ exports.getNearbySmartBins = async (req, res, next) => {
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
+
+exports.updateFillLevel = async (req, res, next) => {
+  console.log("updateFillLevel function invoked");
+
+  try {
+    const { binId, newFillLevel } = req.body;
+    console.log("Request Body:", req.body);
+
+    const result = await SmartBinService.updateFillLevel(binId, newFillLevel);
+
+    console.log("Service Response:", result);
+
+    if (result.success) {
+      console.log("Success: Updated smart bin fill level");
+      return res.status(200).json({
+        status: true,
+        message: result.message,
+        updatedBin: result.updatedBin,
+      });
+    } else {
+      console.log(
+        "Error: Updating smart bin fill level failed with message:",
+        result.message
+      );
+      return res.status(400).json({ status: false, error: result.message });
+    }
+  } catch (error) {
+    console.error("Error in updateFillLevel controller:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};

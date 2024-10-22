@@ -46,9 +46,9 @@ exports.getShedulePickups = async (req, res, next) => {
 
     const successRes = await SchedulePickupService.getSchedulePickup(
       _id,
-      area, 
-      date, 
-      collector, 
+      area,
+      date,
+      collector,
       status,
       locations,
       quantity
