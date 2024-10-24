@@ -3,8 +3,6 @@ const User = require('../models/Usermodel');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-
-
 exports.loginCollector = async (req, res, next) => {
   try {
     const { username, password } = req.body;

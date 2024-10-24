@@ -12,7 +12,7 @@ const garbageWeightSchema = new Schema({
   wasteList: [
     {
       quantity: { type: Number, required: true },
-      wasteType: { type: String, required: true }
+      wastetype: { type: String, required: true }
     }
   ],
   rewardPoints: { 
