@@ -9,6 +9,10 @@ route.post("/deleteAdmin", adminController.deleteAdmin);
 route.get("/getRewards", adminController.getRewards);
 route.post("/updateAdmin", adminController.updateAdmin);
 route.post("/updateAdminbyUser", adminController.updateAdminbyUser);
+route.post("/changePassword", adminController.changePassword);
+route.post("/getAdminDetails", adminController.getAdminDetails); 
+
+
 
 
 module.exports = route;

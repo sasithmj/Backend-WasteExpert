@@ -8,6 +8,9 @@ route.post("/getAllCol", collectorController.getAllCol);
 route.post("/deleteCol", collectorController.deleteCollector);
 route.post("/updateCol", collectorController.updateCollector);
 route.post("/updateColbyUser", collectorController.updateCollectorbyUser);
+route.post("/changePassword", collectorController.changePassword);
+route.post("/getCollectorDetails", collectorController.getCollectorDetails);
+
 
 
 

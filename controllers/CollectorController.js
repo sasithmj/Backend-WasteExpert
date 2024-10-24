@@ -1,5 +1,7 @@
 const CollectorService = require("../services/CollectorService");
 const User = require('../models/Usermodel');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 
 
@@ -7,13 +9,29 @@ exports.loginCollector = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    const loginRes = await CollectorService.loginCollector(username, password);
-
-    if (loginRes.success) {
-      res.status(200).json({ status: true, token: loginRes.token });
-    } else {
-      res.status(401).json({ status: false, error: loginRes.message });
+    // Check if the collector exists
+    const collector = await CollectorService.checkCollector(username); // Assuming this method checks for the collector
+    if (!collector) {
+      return res
+        .status(401)
+        .json({ status: false, error: "Invalid username or password" });
     }
+
+    const isMatch = await bcrypt.compare(password, collector.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ status: false, error: "Invalid username or password" });
+    }
+
+    const tokenData = {
+      _id: collector._id,
+      username: collector.username,
+      userType: "collector", // Adjust as needed
+    };
+    const token = jwt.sign(tokenData, "secretkey", { expiresIn: "1h" }); // Use the same secret and expiry
+
+    res.status(200).json({ status: true, token: token });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
@@ -187,3 +205,60 @@ exports.updateCollectorbyUser = async (req, res, next) => {
     return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { _id, oldPassword, newPassword } = req.body;
+
+    const collector = await CollectorService.checkCollectorById(_id); // Fetch collector by ID
+    if (!collector) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Collector not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, collector.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ status: false, message: "Old password is incorrect" });
+    }
+
+    const updatedCollector = await CollectorService.changeCollectorPassword(
+      _id,
+      newPassword
+    );
+    if (updatedCollector.success) {
+      return res
+        .status(200)
+        .json({ status: true, message: "Password changed successfully" });
+    } else {
+      return res
+        .status(400)
+        .json({ status: false, message: updatedCollector.message });
+    }
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.getCollectorDetails = async (req, res, next) => {
+  try {
+    const { id } = req.body; // Get ID from the request body
+    const successRes = await CollectorService.getCollectorById(id);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, user: successRes.user });
+    } else {
+      res.status(404).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+

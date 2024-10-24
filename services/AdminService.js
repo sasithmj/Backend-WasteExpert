@@ -82,17 +82,16 @@ class AdminService {
     }
   }
 
-
   static async getRewards() {
     try {
       const rewards = await GarbageWeightModel.find({}).populate({
-        path: 'userId',
+        path: "userId",
         model: UserModel, // Use the UserModel explicitly
       });
 
       return {
         success: true,
-        rewards: rewards.map(reward => ({
+        rewards: rewards.map((reward) => ({
           userId: reward.userId._id,
           currentBalance: reward.rewardPoints,
           withdrawnRewards: reward.withdrawnRewards,
@@ -122,19 +121,23 @@ class AdminService {
   static async updateAdmin(_id, updateData) {
     try {
       const { fullName, address, phoneNum, email, role } = updateData;
-  
+
       // Only update the fields that are provided
       const updatedAdmin = await Admin.findByIdAndUpdate(
         _id,
         { fullName, address, phoneNum, email, role },
         { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
       );
-  
+
       if (!updatedAdmin) {
         return { success: false, message: "Admin not found" };
       }
-  
-      return { success: true, message: "Admin updated successfully", admin: updatedAdmin };
+
+      return {
+        success: true,
+        message: "Admin updated successfully",
+        admin: updatedAdmin,
+      };
     } catch (error) {
       console.error("Error while updating admin:", error);
       return { success: false, message: "Error updating admin" };
@@ -143,28 +146,73 @@ class AdminService {
 
   static async updateAdminbyUser(_id, updateData) {
     try {
-      const { fullName, address, phoneNum, email} = updateData;
-  
+      const { fullName, address, phoneNum, email } = updateData;
+
       // Only update the fields that are provided
       const updatedAdmin = await Admin.findByIdAndUpdate(
         _id,
-        { fullName, address, phoneNum, email, },
+        { fullName, address, phoneNum, email },
         { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
       );
-  
+
       if (!updatedAdmin) {
         return { success: false, message: "Admin not found" };
       }
-  
-      return { success: true, message: "Updated successfully", admin: updatedAdmin };
+
+      return {
+        success: true,
+        message: "Updated successfully",
+        admin: updatedAdmin,
+      };
     } catch (error) {
       console.error("Error while updating:", error);
       return { success: false, message: "Error updating" };
     }
   }
-  
 
+  static async checkAdminById(_id) {
+    try {
+      const admin = await Admin.findById(_id);
+      return admin; // Returns admin document or null if not found
+    } catch (error) {
+      console.error("Error while checking admin by ID:", error);
+      throw error; // Propagate the error up the call stack
+    }
+  }
 
+  static async changeAdminPassword(_id, newPassword) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      const updatedAdmin = await Admin.findByIdAndUpdate(
+        _id,
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedAdmin) {
+        return { success: false, message: "Admin not found" };
+      }
+
+      return { success: true, message: "Password updated successfully" };
+    } catch (error) {
+      console.error("Error changing password:", error);
+      return { success: false, message: "Error updating password" };
+    }
+  }
+  static async getAdminById(id) {
+    try {
+      const admin = await Admin.findById(id).select("-password"); // Exclude the password field
+      if (!admin) {
+        return { success: false, message: "Admin not found" };
+      }
+      return { success: true, user: admin };
+    } catch (error) {
+      console.error("Error while fetching admin details:", error);
+      throw new Error("Error while fetching admin details");
+    }
+  }
 }
 
 module.exports = AdminService;

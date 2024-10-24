@@ -216,4 +216,58 @@ exports.updateAdminbyUser = async (req, res, next) => {
   }
 };
 
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { _id, oldPassword, newPassword } = req.body;
+
+    const admin = await AdminService.checkAdminById(_id); // This should work now
+    if (!admin) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Admin not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ status: false, message: "Old password is incorrect" });
+    }
+
+    const updatedAdmin = await AdminService.changeAdminPassword(
+      _id,
+      newPassword
+    );
+    if (updatedAdmin.success) {
+      return res
+        .status(200)
+        .json({ status: true, message: "Password changed successfully" });
+    } else {
+      return res
+        .status(400)
+        .json({ status: false, message: updatedAdmin.message });
+    }
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.getAdminDetails = async (req, res, next) => {
+  try {
+    const { id } = req.body; // Get ID from the request body
+    const successRes = await AdminService.getAdminById(id);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, user: successRes.user });
+    } else {
+      res.status(404).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
 

@@ -126,19 +126,23 @@ class CollectorService {
   static async updateCollector(_id, updateData) {
     try {
       const { fullName, address, phoneNum, email, vehicalNo } = updateData;
-  
+
       // Only update the fields that are provided
       const updatedCollector = await Collector.findByIdAndUpdate(
         _id,
         { fullName, address, phoneNum, email, vehicalNo },
         { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
       );
-  
+
       if (!updatedCollector) {
         return { success: false, message: "Collector not found" };
       }
-  
-      return { success: true, message: "Collector updated successfully", collector: updatedCollector };
+
+      return {
+        success: true,
+        message: "Collector updated successfully",
+        collector: updatedCollector,
+      };
     } catch (error) {
       console.error("Error while updating collector:", error);
       return { success: false, message: "Error updating collector" };
@@ -148,26 +152,75 @@ class CollectorService {
   static async updateCollectorbyUser(_id, updateData) {
     try {
       const { fullName, address, phoneNum, email, vehicalNo } = updateData;
-  
+
       // Only update the fields that are provided
       const updatedCollector = await Collector.findByIdAndUpdate(
         _id,
         { fullName, address, phoneNum, email, vehicalNo },
         { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
       );
-  
+
       if (!updatedCollector) {
         return { success: false, message: "Collector not found" };
       }
-  
-      return { success: true, message: "Updated successfully", collector: updatedCollector };
+
+      return {
+        success: true,
+        message: "Updated successfully",
+        collector: updatedCollector,
+      };
     } catch (error) {
       console.error("Error while updating:", error);
       return { success: false, message: "Error updating" };
     }
   }
 
+  static async checkCollectorById(_id) {
+    try {
+      const collector = await Collector.findById(_id);
+      return collector; // Returns collector document or null if not found
+    } catch (error) {
+      console.error("Error while checking collector by ID:", error);
+      throw error; // Propagate the error up the call stack
+    }
+  }
+
+  static async changeCollectorPassword(_id, newPassword) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      const updatedCollector = await Collector.findByIdAndUpdate(
+        _id,
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedCollector) {
+        return { success: false, message: "Collector not found" };
+      }
+
+      return { success: true, message: "Password updated successfully" };
+    } catch (error) {
+      console.error("Error changing password:", error);
+      return { success: false, message: "Error updating password" };
+    }
+  }
+
+  static async getCollectorById(id) {
+    try {
+      const collector = await Collector.findById(id).select("-password"); // Exclude the password field
+      if (!collector) {
+        return { success: false, message: "Collector not found" };
+      }
+      return { success: true, user: collector };
+    } catch (error) {
+      console.error("Error while fetching collector details:", error);
+      throw new Error("Error while fetching collector details");
+    }
+  }
 }
+
 
 function calculateRewardPoints(quantity, wasteType) {
   const pointRates = {
@@ -179,6 +232,8 @@ function calculateRewardPoints(quantity, wasteType) {
   };
   return quantity * (pointRates[wasteType] || 0);
 }
+
+
 
 
 

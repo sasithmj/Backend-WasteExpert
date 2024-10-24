@@ -7,5 +7,7 @@ route.post("/getAllDis", DispatcherController.getAllDis);
 route.post("/deleteDis", DispatcherController.deleteDispatcher);
 route.post("/updateDis", DispatcherController.updateDispatcher);
 route.post("/updateDisbyUser", DispatcherController.updateDispatcherbyUser);
+route.post("/changePassword", DispatcherController.changePassword); // Add this line
+route.post("/getDispatcherDetails", DispatcherController.getDispatcherDetails);
 
 module.exports = route;
