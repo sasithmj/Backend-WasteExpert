@@ -65,6 +65,37 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
+// custom error handling middleware for Multer
+const multerErrorHandler = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    // handle multer-specific errors
+    res.status(400).send({ error: err.message });
+  } else if (err) {
+    // handle other errors
+    res.status(500).send({ error: "An unexpected error occurred" });
+  } else {
+    next(); // no errors, proceed to the next middleware
+  }
+};
+
+// storage for user profile image
+const userStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/users");
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${req.query?.user}.png`);
+  },
+});
+
+const uploadUser = multer({ storage: userStorage });
+
+app.use(
+  "/image",
+  uploadUser.single("profileImage"),
+  multerErrorHandler
+);
+
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
