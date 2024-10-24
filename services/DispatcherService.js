@@ -131,6 +131,51 @@ class DispatcherService {
     }
   }
 
+  static async checkDispatcherById(_id) {
+    try {
+      const dispatcher = await Dispatcher.findById(_id);
+      return dispatcher; // Returns dispatcher document or null if not found
+    } catch (error) {
+      console.error("Error while checking dispatcher by ID:", error);
+      throw error; // Propagate the error up the call stack
+    }
+  }
+
+  static async changeDispatcherPassword(_id, newPassword) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      const updatedDispatcher = await Dispatcher.findByIdAndUpdate(
+        _id,
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedDispatcher) {
+        return { success: false, message: "Dispatcher not found" };
+      }
+
+      return { success: true, message: "Password updated successfully" };
+    } catch (error) {
+      console.error("Error changing password:", error);
+      return { success: false, message: "Error updating password" };
+    }
+  }
+
+  static async getDispatcherById(id) {
+    try {
+      const dispatcher = await Dispatcher.findById(id).select("-password"); // Exclude the password field
+      if (!dispatcher) {
+        return { success: false, message: "Dispatcher not found" };
+      }
+      return { success: true, user: dispatcher };
+    } catch (error) {
+      console.error("Error while fetching dispatcher details:", error);
+      throw new Error("Error while fetching dispatcher details");
+    }
+  }
 }
+
 
 module.exports = DispatcherService;

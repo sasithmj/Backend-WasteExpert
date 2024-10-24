@@ -1,21 +1,34 @@
 const DispatcherService = require("../services/DispatcherService");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 exports.dispatcherLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     // Attempt to login dispatcher
-    const loginResult = await DispatcherService.dispatcherLogin(
-      email,
-      password
-    );
-
-    // Handle login result
-    if (loginResult.success) {
-      res.status(200).json({ status: true, token: loginResult.token });
-    } else {
-      res.status(401).json({ status: false, error: loginResult.error });
+    const dispatcher = await DispatcherService.checkDispatcher(email); // Assuming this method checks for the dispatcher
+    if (!dispatcher) {
+      return res
+        .status(401)
+        .json({ status: false, error: "Invalid email or password" });
     }
+
+    const isMatch = await bcrypt.compare(password, dispatcher.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ status: false, error: "Invalid email or password" });
+    }
+
+    const tokenData = {
+      _id: dispatcher._id,
+      email: dispatcher.email,
+      userType: "dispatcher", // Adjust as needed
+    };
+    const token = jwt.sign(tokenData, "secretkey", { expiresIn: "1h" }); // Use the same secret and expiry
+
+    res.status(200).json({ status: true, token: token });
   } catch (error) {
     console.error("Error in dispatcherLogin controller:", error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
@@ -151,5 +164,60 @@ exports.updateDispatcherbyUser = async (req, res, next) => {
   } catch (error) {
     console.error("Error updating:", error);
     return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { _id, oldPassword, newPassword } = req.body;
+
+    const dispatcher = await DispatcherService.checkDispatcherById(_id);
+    if (!dispatcher) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Dispatcher not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, dispatcher.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ status: false, message: "Old password is incorrect" });
+    }
+
+    const updatedDispatcher = await DispatcherService.changeDispatcherPassword(
+      _id,
+      newPassword
+    );
+    if (updatedDispatcher.success) {
+      return res
+        .status(200)
+        .json({ status: true, message: "Password changed successfully" });
+    } else {
+      return res
+        .status(400)
+        .json({ status: false, message: updatedDispatcher.message });
+    }
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.getDispatcherDetails = async (req, res, next) => {
+  try {
+    const { id } = req.body; // Get ID from the request body
+    const successRes = await DispatcherService.getDispatcherById(id);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, user: successRes.user });
+    } else {
+      res.status(404).json({ status: false, error: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
