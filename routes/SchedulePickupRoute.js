@@ -6,6 +6,8 @@ route.post("/getschedulepickup", schedulePickupController.getShedulePickups);
 route.post("/getSchedulePickupToCollector", schedulePickupController.getSchedulePickupToCollector);
 // route.post("/updateSchedules", schedulePickupController.updateSchedules);
 route.post("/updateScheduleLocationInPickup", schedulePickupController.updateScheduleLocationInPickup);
-route.post("/getScheduleByUserId", schedulePickupController.getSchedulePickupsByUserId);
+route.post("/startSchedulePickup", schedulePickupController.startSchedulePickup);
+route.post("/finishSchedulePickup", schedulePickupController.finishSchedulePickup);
+route.post("/deleteschedulepickup", schedulePickupController.deleteSchedulePickup);
 
 module.exports = route;

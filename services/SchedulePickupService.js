@@ -34,11 +34,11 @@ class SchedulePickupService {
       return {
         success: true,
         shedulepickups: shedulepickups.map((shedulepickup) => ({
-          // Include desired properties from smartbin object
+          _id: shedulepickup._id,
           area: shedulepickup.area,
           date: shedulepickup.date,
           collector: shedulepickup.collector,
-          Status: shedulepickup.Status,
+          status: shedulepickup.status,
           locations: shedulepickup.locations,
           quantity: shedulepickup.quantity,
         })),
@@ -59,6 +59,7 @@ class SchedulePickupService {
       return {
         success: true,
         schedulePickups: schedulePickups.map((pickup) => ({
+          id: pickup._id,
           area: pickup.area,
           date: pickup.date,
           collector: pickup.collector,
@@ -111,38 +112,75 @@ class SchedulePickupService {
     }
   }
 
-  static async getSchedulePickupsByUserId(userId) {
+  static async startSchedulePickup(id) {
     try {
-      const schedulePickups = await SchedulePickup.find({
-        "locations.UserId": userId,
-      });
 
-      if (!schedulePickups || schedulePickups.length === 0) {
-        return {
-          success: false,
-          message: "No schedule pickups found for this user",
-        };
+      const schedule = await SchedulePickup.findOne({ _id: id });
+      if (!schedule) {
+        return { success: false, message: "Schedule not found" };
       }
 
-      return {
-        success: true,
-        schedulePickups: schedulePickups.map((pickup) => ({
-          _id: pickup._id,
-          area: pickup.area,
-          date: pickup.date,
-          collector: pickup.collector,
-          status: pickup.status,
-          locations: pickup.locations.filter(
-            (location) => location.UserId.toString() === userId
-          ),
-          quantity: pickup.quantity,
-        })),
-      };
+      // Log the data being updated for debugging
+      console.log("Updating schedule:", {
+        id
+      });
+
+      // update and save schedule
+      schedule.status = "Started";
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+
     } catch (error) {
-      console.error("Error while fetching schedule pickups for user:", error);
-      throw new Error("Error while fetching schedule pickups for user");
+      console.error("Error while updating Schedule:", error.message);
+      return { success: false, message: "Error while updating Schedule: " + error.message };
+    }
+  }
+
+  static async finishSchedulePickup(id) {
+    try {
+
+      const schedule = await SchedulePickup.findOne({ _id: id });
+      if (!schedule) {
+        return { success: false, message: "Schedule not found" };
+      }
+
+      // Log the data being updated for debugging
+      console.log("Updating schedule:", {
+        id
+      });
+
+      // update and save schedule
+      schedule.status = "Finished";
+      await schedule.save();
+
+      return { success: true, message: "Schedule updated successfully" };
+
+    } catch (error) {
+      console.error("Error while updating Schedule:", error.message);
+      return { success: false, message: "Error while updating Schedule: " + error.message };
+    }
+  }
+
+  static async deleteSchedulePickup(_id) {
+    try {
+      const deletedSchedulePickup = await SchedulePickup.findByIdAndDelete(_id);
+
+      if (!deletedSchedulePickup) {
+        return { success: false, message: "SchedulePickup not found" };
+      }
+
+      return { success: true, message: "SchedulePickup deleted successfully" };
+    } catch (error) {
+      console.error("Error while deleting SchedulePickup:", error);
+      throw new Error("Error while deleting SchedulePickup");
     }
   }
 }
+
+
+
+
+
 
 module.exports = SchedulePickupService;

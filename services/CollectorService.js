@@ -67,7 +67,7 @@ class CollectorService {
       return {
         success: true,
         collectors: collectors.map((collector) => ({
-          id: collector.id,
+          _id: collector._id,
           username: collector.username,
           fullName: collector.fullName,
           address: collector.address,
@@ -107,6 +107,66 @@ class CollectorService {
       return { success: false, message: "Error adding garbage weight" };
     }
   }
+
+  static async deleteCollector(_id) {
+    try {
+      const deletedCollector = await Collector.findByIdAndDelete(_id);
+
+      if (!deletedCollector) {
+        return { success: false, message: "Collector not found" };
+      }
+
+      return { success: true, message: "Collector deleted successfully" };
+    } catch (error) {
+      console.error("Error while deleting collector:", error);
+      throw new Error("Error while deleting collector");
+    }
+  }
+
+  static async updateCollector(_id, updateData) {
+    try {
+      const { fullName, address, phoneNum, email, vehicalNo } = updateData;
+  
+      // Only update the fields that are provided
+      const updatedCollector = await Collector.findByIdAndUpdate(
+        _id,
+        { fullName, address, phoneNum, email, vehicalNo },
+        { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
+      );
+  
+      if (!updatedCollector) {
+        return { success: false, message: "Collector not found" };
+      }
+  
+      return { success: true, message: "Collector updated successfully", collector: updatedCollector };
+    } catch (error) {
+      console.error("Error while updating collector:", error);
+      return { success: false, message: "Error updating collector" };
+    }
+  }
+
+  static async updateCollectorbyUser(_id, updateData) {
+    try {
+      const { fullName, address, phoneNum, email, vehicalNo } = updateData;
+  
+      // Only update the fields that are provided
+      const updatedCollector = await Collector.findByIdAndUpdate(
+        _id,
+        { fullName, address, phoneNum, email, vehicalNo },
+        { new: true, runValidators: true } // 'new' returns the updated document, 'runValidators' ensures validation is applied
+      );
+  
+      if (!updatedCollector) {
+        return { success: false, message: "Collector not found" };
+      }
+  
+      return { success: true, message: "Updated successfully", collector: updatedCollector };
+    } catch (error) {
+      console.error("Error while updating:", error);
+      return { success: false, message: "Error updating" };
+    }
+  }
+
 }
 
 function calculateRewardPoints(quantity, wasteType) {
@@ -119,5 +179,7 @@ function calculateRewardPoints(quantity, wasteType) {
   };
   return quantity * (pointRates[wasteType] || 0);
 }
+
+
 
 module.exports = CollectorService;

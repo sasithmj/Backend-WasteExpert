@@ -58,14 +58,14 @@ exports.addCollector = async (req, res, next) => {
 
 exports.getAllCol = async (req, res, next) => {
   try {
-    const { id, username, fullName, address, phoneNum, email, vehicalNo } =
+    const { _id, username, fullName, address, phoneNum, email, vehicalNo } =
       req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
 
     const successRes = await CollectorService.getAllCol(
-      id,
+      _id,
       username,
       fullName,
       address,
@@ -120,5 +120,70 @@ exports.addGarbageWeight = async (req, res, next) => {
   } catch (error) {
     console.error('Error adding garbage weight:', error);
     res.status(500).json({ status: false, error: 'Internal Server Error' });
+  }
+};
+
+exports.deleteCollector = async (req, res, next) => {
+  try {
+
+    const {_id} = req.body;
+    console.log("Request Body:", req.body);
+
+    const successRes = await CollectorService.deleteCollector(_id);
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error deleting collector:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateCollector = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email, vehicalNo } = req.body;
+
+    const successRes = await CollectorService.updateCollector(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+      vehicalNo
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, collector: successRes.collector });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating collector:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateCollectorbyUser = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email, vehicalNo } = req.body;
+
+    const successRes = await CollectorService.updateCollectorbyUser(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+      vehicalNo
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, collector: successRes.collector });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };

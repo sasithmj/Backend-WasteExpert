@@ -5,10 +5,11 @@ route.post("/register", adminController.register);
 route.post("/login", adminController.login);
 route.post("/addAdmin", adminController.addAdmin);
 route.post("/getAllAdmin", adminController.getAllAdmin);
-
-
-
+route.post("/deleteAdmin", adminController.deleteAdmin);
 route.get("/getRewards", adminController.getRewards);
+route.post("/updateAdmin", adminController.updateAdmin);
+route.post("/updateAdminbyUser", adminController.updateAdminbyUser);
+
 
 module.exports = route;
 

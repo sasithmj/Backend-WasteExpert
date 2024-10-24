@@ -62,12 +62,13 @@ exports.addDispatcher = async (req, res, next) => {
 
 exports.getAllDis = async (req, res, next) => {
   try {
-    const { username, fullName, address, phoneNum, email } = req.body;
+    const { _id, username, fullName, address, phoneNum, email } = req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
 
     const successRes = await DispatcherService.getAllDis(
+      _id,
       username,
       fullName,
       address,
@@ -87,5 +88,68 @@ exports.getAllDis = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error:", error);
+  }
+};
+
+exports.deleteDispatcher = async (req, res, next) => {
+  try {
+
+    const {_id} = req.body;
+    console.log("Request Body:", req.body);
+
+    const successRes = await DispatcherService.deleteDispatcher(_id);
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error deleting dispatcher:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateDispatcher = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email } = req.body;
+
+    const successRes = await DispatcherService.updateDispatcher(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, dispatcher: successRes.dispatcher });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating dispatcher:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
+
+exports.updateDispatcherbyUser = async (req, res, next) => {
+  try {
+    const { _id, fullName, address, phoneNum, email } = req.body;
+
+    const successRes = await DispatcherService.updateDispatcherbyUser(_id, {
+      fullName,
+      address,
+      phoneNum,
+      email,
+    });
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message, dispatcher: successRes.dispatcher });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
+    }
+  } catch (error) {
+    console.error("Error updating:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };

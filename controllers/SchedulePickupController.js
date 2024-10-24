@@ -39,16 +39,17 @@ exports.newSchedulePickup = async (req, res, next) => {
 
 exports.getShedulePickups = async (req, res, next) => {
   try {
-    const {area, date, collector, Status,locations, quantity} = req.body;
+    const {_id, area, date, collector, status, locations, quantity} = req.body;
 
     // Log the received request body
     console.log("Request Body:", req.body);
 
     const successRes = await SchedulePickupService.getSchedulePickup(
-      area, 
-      date, 
-      collector, 
-      Status,
+      _id,
+      area,
+      date,
+      collector,
+      status,
       locations,
       quantity
     );
@@ -71,12 +72,12 @@ exports.getShedulePickups = async (req, res, next) => {
 
 exports.getSchedulePickupToCollector = async (req, res, next) => {
   try {
-    const { area, date, collector, status, locations, quantity } = req.body;
+    const { id, area, date, collector, status, locations, quantity } = req.body;
 
     console.log("Request Body:", req.body);
 
     const successRes = await SchedulePickupService.getSchedulePickupToCollector(
-      { area, date, collector, status, locations, quantity }
+      { id, area, date, collector, status, locations, quantity }
     );
 
     console.log("Success Response:", successRes);
@@ -94,7 +95,6 @@ exports.getSchedulePickupToCollector = async (req, res, next) => {
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
-
 
 exports.updateScheduleLocationInPickup = async (req, res, next) => {
   try {
@@ -114,28 +114,57 @@ exports.updateScheduleLocationInPickup = async (req, res, next) => {
   }
 };
 
-exports.getSchedulePickupsByUserId = async (req, res, next) => {
+exports.startSchedulePickup = async (req, res, next) => {
   try {
-    const { userId } = req.body; // Assume the userId is passed as a route parameter
+    const { id } = req.body; // Receive schedule _id, locationId, and wasteTypes from request
 
-    console.log("Request for user pickups:", userId);
-
-    const successRes = await SchedulePickupService.getSchedulePickupsByUserId(
-      userId
-    );
-
-    console.log("Success Response:", successRes);
+    const successRes = await SchedulePickupService.startSchedulePickup(id);
 
     if (successRes.success) {
-      res.status(200).json({
-        status: true,
-        schedulePickups: successRes.schedulePickups,
-      });
+      res.status(200).json({ status: true, success: successRes.message });
     } else {
-      res.status(404).json({ status: false, error: successRes.message });
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+
+  } catch (error) {
+    console.error("Update schedule Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.finishSchedulePickup = async (req, res, next) => {
+  try {
+    const { id } = req.body; // Receive schedule _id, locationId, and wasteTypes from request
+
+    const successRes = await SchedulePickupService.finishSchedulePickup(id);
+
+    if (successRes.success) {
+      res.status(200).json({ status: true, success: successRes.message });
+    } else {
+      res.status(400).json({ status: false, error: successRes.message });
+    }
+
+  } catch (error) {
+    console.error("Update schedule Error:", error);
+    res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.deleteSchedulePickup = async (req, res, next) => {
+  try {
+
+    const {_id} = req.body;
+    console.log("Request Body:", req.body);
+
+    const successRes = await SchedulePickupService.deleteSchedulePickup(_id);
+
+    if (successRes.success) {
+      return res.status(200).json({ status: true, message: successRes.message });
+    } else {
+      return res.status(404).json({ status: false, message: successRes.message });
     }
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ status: false, error: "Internal Server Error" });
+    console.error("Error deleting cchedulePickup:", error);
+    return res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
