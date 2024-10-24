@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const GarbageWeight = require("../models/GarbageWeightModel"); // Add this line to import the new model
 
 const GarbageWeightModel = require("../models/GarbageWeightModel");
+
 class CollectorService {
   static async loginCollector(email, password) {
     try {

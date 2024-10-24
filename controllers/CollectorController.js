@@ -1,8 +1,6 @@
 const CollectorService = require("../services/CollectorService");
 const User = require('../models/Usermodel');
 
-
-
 exports.loginCollector = async (req, res, next) => {
   try {
     const { username, password } = req.body;
