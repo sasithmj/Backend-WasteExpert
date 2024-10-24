@@ -162,7 +162,7 @@ exports.updateAddress = async (req, res, next) => {
 exports.updateUserData = async (req, res, next) => {
   try {
     const { email, name, mobile, street, city, state, zip } = req.body;
-    console("update user");
+    console.log("update user");
 
     // Check if user exists
     const user = await UserService.checkUser(email);
