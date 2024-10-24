@@ -25,6 +25,7 @@ const dispatcherSchema = new Schema({
   phoneNum: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,

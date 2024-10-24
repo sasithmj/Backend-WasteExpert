@@ -41,6 +41,18 @@ class CollectorService {
     }
   }
 
+  static async checkCollector(email) {
+    try {
+      const existingCollector = await Collector.findOne({ email });
+      return existingCollector; // Returns collector if found, or null if not found
+    } catch (error) {
+      console.error("Error in CollectorService.checkCollector:", error);
+      throw error; // Propagate the error to the controller
+    }
+  }
+
+  
+
   static async addCollector(collectorData) {
     try {
       const newCollector = new Collector(collectorData);

@@ -5,14 +5,14 @@ const bcrypt = require("bcrypt");
 
 exports.loginCollector = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     // Check if the collector exists
-    const collector = await CollectorService.checkCollector(username); // Assuming this method checks for the collector
+    const collector = await CollectorService.checkCollector(email);
     if (!collector) {
       return res
         .status(401)
-        .json({ status: false, error: "Invalid username or password" });
+        .json({ status: false, error: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(password, collector.password);
@@ -24,7 +24,7 @@ exports.loginCollector = async (req, res, next) => {
 
     const tokenData = {
       _id: collector._id,
-      username: collector.username,
+      email: collector.email,
       userType: "collector", // Adjust as needed
     };
     const token = jwt.sign(tokenData, "secretkey", { expiresIn: "1h" }); // Use the same secret and expiry

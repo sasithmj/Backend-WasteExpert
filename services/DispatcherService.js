@@ -29,6 +29,15 @@ class DispatcherService {
       return { success: false, error: "Internal Server Error" };
     }
   }
+  static async checkDispatcher(email) {
+    try {
+      const existingDispatcher = await Dispatcher.findOne({ email });
+      return existingDispatcher; // Returns dispatcher if found, or null if not found
+    } catch (error) {
+      console.error("Error in DispatcherService.checkDispatcher:", error);
+      throw error; // Propagate the error to the controller
+    }
+  }
 
   static async addDispatcher(dispatcherData) {
     try {

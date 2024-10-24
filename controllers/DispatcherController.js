@@ -7,7 +7,7 @@ exports.dispatcherLogin = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Attempt to login dispatcher
-    const dispatcher = await DispatcherService.checkDispatcher(email); // Assuming this method checks for the dispatcher
+    const dispatcher = await DispatcherService.checkDispatcher(email);
     if (!dispatcher) {
       return res
         .status(401)
