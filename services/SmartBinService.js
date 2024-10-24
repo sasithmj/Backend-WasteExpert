@@ -105,7 +105,7 @@ class SmartBinService {
           locationLat: updatedBin.locationLat,
           locationLng: updatedBin.locationLng,
           garbageTypes: updatedBin.garbageTypes,
-          fillLevel: updatedBin.newFillLevel,
+          fillLevel: updatedBin.fillLevel,
         },
       };
     } catch (error) {

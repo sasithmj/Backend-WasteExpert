@@ -23,7 +23,7 @@ app.get("/she", (req, res) => {
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server is runnnig on port ${port}`);
 });
 
